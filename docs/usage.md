@@ -1,6 +1,6 @@
-# Uso do cliente
+# Using the client
 
-## Configuração
+## Configuration
 
 ```java
 import com.raims.RaimsClient;
@@ -14,86 +14,86 @@ RaimsClient raims = RaimsClient.builder()
     .build();
 ```
 
-O timeout padrão é 80 segundos por tentativa. O limite configurável vai até
-300 segundos. `setMaxNetworkRetries` aceita de zero a cinco tentativas extras
-e vale somente para leituras. Cada cliente mantém sua configuração; ele pode
-ser reutilizado entre threads. Builders são usados por uma thread de cada vez.
+The default timeout is 80 seconds per attempt. The configurable maximum is
+300 seconds. `setMaxNetworkRetries` accepts zero to five extra attempts and
+applies only to reads. Each client retains its configuration and can be reused
+across threads. Use builders from one thread at a time.
 
-`setApiBase` aceita uma origem HTTPS. HTTP é permitido somente em loopback
-para validação local. URLs com caminho, credenciais, query ou fragmento são
-recusadas. O transporte mantém a validação TLS e bloqueia redirects. Suas
-repetições automáticas ficam desativadas por cliente; as tentativas de leitura
-são decididas e contabilizadas somente pelo SDK, sem depender de flags da JVM.
+`setApiBase` accepts an HTTPS origin. HTTP is allowed only on loopback for
+local validation. URLs with a path, credentials, query or fragment are rejected.
+The transport preserves TLS validation and blocks redirects. Its automatic
+retries are disabled per client; read attempts are decided and counted only
+by the SDK, without relying on JVM flags.
 
-`RequestOptions` permite chave de API, idempotência, timeout e retries por
-chamada. A chave opcional substitui a credencial somente naquela requisição;
-a aplicação deve manter a separação entre empresas e ambientes. O SDK não
-oferece seleção de ambiente ou headers arbitrários.
+`RequestOptions` allows per-request API keys, idempotency, timeout and retries.
+The optional key replaces the credential only for that request; the application
+must preserve isolation between companies and environments. The SDK does not
+offer environment selection or arbitrary headers.
 
-`RaimsClient` implementa `AutoCloseable`. Use `try` com recursos para escopos
-curtos ou chame `close()` ao encerrar o cliente compartilhado da aplicação.
-O fechamento libera as conexões, cancela requisições em andamento e pode ser
-repetido. Depois de fechado, o cliente recusa novas chamadas. Preserve-o aberto
-enquanto estiver percorrendo páginas.
-O fechamento também acorda as operações que aguardam o prazo de um retry;
-elas não precisam esperar esse prazo terminar para concluir o cancelamento.
+`RaimsClient` implements `AutoCloseable`. Use try-with-resources for short
+scopes or call `close()` when shutting down the application's shared client.
+Closure releases connections, cancels in-flight requests and can be repeated.
+After closure, the client rejects new calls. Keep it open while iterating
+through pages. Closure also wakes operations waiting for a retry delay; they
+do not need to wait for that delay to end before cancellation completes.
 
-## Parâmetros e respostas
+## Parameters and responses
 
-Os parâmetros tipados ficam em `com.raims.param` e usam `builder()`. Omitir um
-setter mantém o campo ausente. `setCampoNull()` envia null quando o contrato
-permite. Em atualizações parciais, confira o efeito de null no campo escolhido.
-Zero, false, listas e mapas vazios são preservados. `build()` cria uma cópia
-independente dos valores; alterações posteriores no builder não a modificam.
+Typed parameters are in `com.raims.param` and use `builder()`. Omitting a
+setter leaves the field absent. The `set<Field>Null()` pattern sends null when
+the contract allows it. For partial updates, check the effect of null on the
+selected field. Zero, false, empty lists and empty maps are preserved.
+`build()` takes an independent copy of the values; subsequent changes to the
+builder do not affect it.
 
-Os modelos de resposta ficam em `com.raims.model` e têm getters tipados.
-Inteiros usam `Long`, inclusive centavos e segundos Unix, sem conversão para
-ponto flutuante. Valores JSON de tipo number usam `BigDecimal`. Objetos
-aninhados, listas e mapas mantêm seus tipos. Constantes dos valores públicos
-estão em `EnumValues`; a aplicação também pode receber valores futuros.
+Response models are in `com.raims.model` and provide typed getters. Integers
+use `Long`, including cents and Unix seconds, without conversion to floating
+point. JSON values of type number use `BigDecimal`. Nested objects, lists and
+maps retain their types. Public value constants are in `EnumValues`; the
+application can also receive future values.
 
-`hasField(nome)` distingue ausência de presença. `isNull(nome)` identifica
-null explícito. `getRawJson()` fornece uma cópia dos campos recebidos,
-incluindo campos futuros. Trate esse JSON como dado sensível. A representação
-padrão dos recursos omite seu conteúdo.
+`hasField(name)` distinguishes absence from presence. `isNull(name)` identifies
+explicit null. `getRawJson()` provides a copy of the received fields, including
+future fields. Treat this JSON as sensitive data. Default resource
+representations omit their contents.
 
-A estrutura de cada sucesso é conferida contra o status HTTP do contrato
-antes de criar o modelo. Campos novos são preservados. Respostas incompatíveis,
-inteiros fora de 64 bits, JSON inválido e corpos acima de 16 MiB são recusados.
-Permissões, formatos e regras de negócio continuam sujeitos à API.
+Each success structure is checked against the contract's HTTP status before
+the model is created. New fields are preserved. Incompatible responses,
+integers outside the 64-bit range, invalid JSON and bodies larger than 16 MiB
+are rejected. Permissions, formats and business rules remain subject to the API.
 
-Quando uma operação admite modelos diferentes por status, o retorno `*Result`
-reúne os getters disponíveis. Consulte `getLastResponse().getStatusCode()` e
-`hasField` antes de usar um campo específico de um resultado. `202` permanece
-pendente. Um resultado sem corpo, como a exclusão de webhook em `204`, ainda
-contém os metadados HTTP.
+When an operation allows different models by status, its `*Result` return type
+combines the available getters. Check `getLastResponse().getStatusCode()` and
+`hasField` before using a field specific to one result. `202` remains pending.
+An empty-body result, such as webhook deletion with `204`, still contains HTTP
+metadata.
 
-## Paginação
+## Pagination
 
-`list()` retorna uma página tipada com `getList()` e `getPage()`. A segunda
-propriedade contém os metadados JSON de cursor. `nextPage()` e `previousPage()`
-retornam null quando não há página naquela direção. Navegação e iteração
-preservam filtros, credenciais e opções da chamada original.
+`list()` returns a typed page with `getList()` and `getPage()`. The latter
+contains JSON cursor metadata. `nextPage()` and `previousPage()` return null
+when no page exists in that direction. Navigation and iteration preserve the
+original call's filters, credentials and options.
 
-`autoPagingIterable()` busca páginas conforme a aplicação avança. Sair do laço
-interrompe novas leituras. `autoPagingToList(limit)` permite limitar a quantidade
-de itens carregados. Cursores ausentes ou repetidos com indicação de próxima
-página geram erro de protocolo, evitando um ciclo de consultas.
-Uma falha ao buscar uma página não avança o iterador: a aplicação pode capturar
-a exceção e tentar continuar quando a leitura estiver disponível novamente.
+`autoPagingIterable()` fetches pages as the application advances. Leaving the
+loop stops further reads. `autoPagingToList(limit)` limits the number of items
+loaded. Missing or repeated cursors accompanied by a next-page indicator cause
+a protocol error, preventing a query loop. A failed page fetch does not advance
+the iterator: the application can catch the exception and try to continue when
+the read is available again.
 
-## Arquivos e uploads
+## Files and uploads
 
-Recibos, boletos e permissões de upload são retornados como metadados da API.
-O cliente autenticado não baixa os links, não envia arquivos e não encaminha
-a chave Bearer para essas URLs. Faça a transferência separadamente pelo
-procedimento e pelos headers retornados no contrato do recurso.
+Receipts, boleto documents and upload permissions are returned as API metadata.
+The authenticated client does not download links, send files or forward the
+Bearer key to those URLs. Transfer files separately using the procedure and
+headers returned in the resource contract.
 
-## Diagnósticos
+## Diagnostics
 
-O observer recebe somente metadados da tentativa: método, caminho com
-parâmetros, duração, tentativa, status e `Request-Id`. Não contém IDs de
-recurso, query, corpo ou credencial. Uma falha do observer não altera o
-resultado da operação nem provoca uma nova escrita. O SDK não envia telemetria
-ou alertas externos. A aplicação pode agregar falhas e recuperação a partir
-dessas informações, sem registrar dados pessoais ou financeiros.
+The observer receives only attempt metadata: method, parameterized path,
+duration, attempt number, status and `Request-Id`. It contains no resource IDs,
+query strings, bodies or credentials. An observer failure does not change the
+operation's result or trigger another write. The SDK sends no external
+telemetry or alerts. The application can aggregate failures and recovery from
+this information without logging personal or financial data.

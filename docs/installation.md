@@ -1,73 +1,73 @@
-# Instalação e atualização
+# Installation and updates
 
-O SDK usa as coordenadas Maven `com.raims:raims-java` e requer Java 11 ou
-superior. A primeira distribuição está no [GitHub](https://github.com/raimshq/raims-java/releases/latest).
-Ela inclui o JAR, o POM, fontes, Javadoc, um manifesto e `SHA256SUMS`.
-O pacote ainda não está disponível no Maven Central.
+The SDK uses Maven coordinates `com.raims:raims-java` and requires Java 11 or
+newer. The first distribution is on
+[GitHub](https://github.com/raimshq/raims-java/releases/latest). It includes the
+JAR, POM, sources, Javadoc, a manifest and `SHA256SUMS`. The package is not yet
+available on Maven Central.
 
-## Baixar a release atual
+## Download the current release
 
-Com GitHub CLI, baixe todos os assets da release estável atual para uma pasta
-nova:
+Use GitHub CLI to download all assets from the current stable release into a
+new folder:
 
 ```sh
 gh release download --repo raimshq/raims-java --pattern '*' --dir raims-java-release
 ```
 
-Também é possível baixar os arquivos pela página de releases. Os nomes dos
-assets permanecem iguais entre versões; a versão e a origem estão no POM e
-no manifesto. Antes da instalação, compare os hashes com `SHA256SUMS`.
-Em sistemas que oferecem `sha256sum`, execute na pasta baixada:
+You can also download files from the releases page. Asset names stay the same
+between versions; the POM and manifest identify the version and source.
+Before installing, compare the hashes with `SHA256SUMS`. On systems that
+provide `sha256sum`, run this command in the downloaded folder:
 
 ```sh
 sha256sum -c SHA256SUMS
 ```
 
-No PowerShell, use `Get-FileHash -Algorithm SHA256` para conferir cada arquivo.
-O checksum detecta divergência entre arquivos; mantenha também a conferência
-do repositório oficial, da tag e do commit da release.
+In PowerShell, use `Get-FileHash -Algorithm SHA256` to check each file.
+Checksums detect differences between files; also verify the official repository,
+tag and release commit.
 
-## Instalar no Maven local
+## Install in your local Maven repository
 
-Execute a partir da pasta que contém `raims-java-release`:
+Run this command from the folder containing `raims-java-release`:
 
 ```sh
 mvn install:install-file -Dfile=raims-java-release/raims-java.jar -DpomFile=raims-java-release/raims-java.pom
 ```
 
-Adicione uma dependência `com.raims:raims-java` ao projeto consumidor, com a
-versão declarada no POM baixado. O POM conserva as dependências do SDK, que o
-Maven resolve no build da aplicação. Não copie somente o JAR para o classpath
-sem resolver essas dependências.
+Add a `com.raims:raims-java` dependency to the consuming project, using the
+version declared in the downloaded POM. The POM retains the SDK dependencies,
+which Maven resolves when building the application. Do not copy only the JAR
+to the classpath without resolving those dependencies.
 
-Os assets `raims-java-sources.jar` e `raims-java-javadoc.jar` permitem consultar
-o código e a documentação no editor. Eles podem ser anexados à biblioteca
-pelo seu ambiente de desenvolvimento.
+The `raims-java-sources.jar` and `raims-java-javadoc.jar` assets let you inspect
+code and documentation in your editor. Your development environment can attach
+them to the library.
 
-## Atualizar
+## Update
 
-Baixe a release estável atual para outra pasta, confira seus hashes e repita
-a instalação local. Depois, atualize a versão da dependência no projeto
-consumidor e execute os testes da sua integração. O download seleciona a
-release atual naquele momento; ele não atualiza projetos automaticamente.
+Download the current stable release into another folder, verify its hashes
+and repeat the local installation. Then update the dependency version in the
+consuming project and run your integration tests. The download selects the
+current release at that moment; it does not update projects automatically.
 
-O SDK deve ser usado no servidor. Mantenha a chave de API fora do código, do
-navegador e dos logs. A URL-base é a mesma nos dois ambientes; empresa,
-ambiente e permissões vêm da chave validada pela API.
+Use the SDK on the server. Keep the API key outside source code, the browser
+and logs. The base URL is the same in both environments; the company,
+environment and permissions come from the key validated by the API.
 
-## Compilar e validar fontes
+## Build and validate source
 
-Contribuidores podem conferir a geração e preparar um pacote com Python,
-Maven e um JDK compatível:
+Contributors can check generation and prepare a package with Python, Maven
+and a compatible JDK:
 
 ```sh
 python scripts/generate.py --check
 mvn package
 ```
 
-O pacote fica em `../.tmp/raims-java-sdk/build`. Esse build não substitui o
-gate completo de engenharia. No workspace da Raims, `mvn verify` e
-`python scripts/check.py` usam o validador do Developer Toolkit nos JDKs
-11, 21 e 25. Os [requisitos de validação](maintenance.md#validação-local)
-pertencem à preparação da entrega e não são necessários para consumir o JAR
-publicado.
+The package is written to `../.tmp/raims-java-sdk/build`. This build does not
+replace the full engineering gate. In the Raims workspace, `mvn verify` and
+`python scripts/check.py` use the Developer Toolkit validator on JDKs 11, 21
+and 25. The [validation requirements](maintenance.md#local-validation) apply
+to release preparation and are not required to consume the published JAR.

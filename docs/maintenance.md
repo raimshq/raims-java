@@ -1,119 +1,121 @@
-# Contrato e manutenção
+# Contract and maintenance
 
-## Fonte e geração
+## Source and generation
 
-`contracts/openapi.json` preserva os bytes da revisão pública imutável
-identificada em `contracts/source.json`, com URL, revisão, SHA-256 e versão.
-A fonte canônica pertence à Public API; o SDK consome a superfície publicada
-em [raimshq/openapi](https://github.com/raimshq/openapi).
+`contracts/openapi.json` preserves the bytes of the immutable public revision
+identified in `contracts/source.json`, including its URL, revision, SHA-256 and
+version. The canonical source belongs to the Public API; the SDK consumes the
+surface published in [raimshq/openapi](https://github.com/raimshq/openapi).
 
 ```sh
 python scripts/generate.py
 python scripts/generate.py --check
 ```
 
-O gerador é offline, confere o checksum e exige que `contracts/service-map.json`
-cubra cada operação exatamente uma vez. Gera serviços, parâmetros, modelos,
-constantes, composição dos serviços, metadados HTTP e referência. `--check`
-compara as saídas sem regravá-las e detecta arquivos gerados obsoletos.
+The generator is offline, verifies the checksum and requires
+`contracts/service-map.json` to cover every operation exactly once. It
+generates services, parameters, models, constants, service composition, HTTP
+metadata and the reference. `--check` compares outputs without rewriting them
+and detects stale generated files.
 
-Entradas e respostas têm representações próprias mesmo quando compartilham
-um schema. Listas e mapas aninhados preservam os tipos Java; as descrições dos
-parâmetros de query também entram no Javadoc dos builders.
-Referências a tipos escalares, listas e mapas usam o tipo Java correspondente,
-inclusive em cadeias de aliases anuláveis. Uma extração de enum para um
-componente mantém as constantes derivadas do campo que o utiliza. Respostas
-raiz de operações continuam sendo objetos; um contrato que mude essa condição
-é recusado pelo gerador e exige uma decisão própria de compatibilidade.
+Inputs and responses have separate representations even when they share a
+schema. Nested lists and maps preserve Java types; query parameter
+descriptions are also included in builder Javadoc. References to scalar types,
+lists and maps use the corresponding Java type, including nullable alias
+chains. Extracting an enum into a component preserves the constants derived
+from the field using it. Operation root responses remain objects; the
+generator rejects contracts that change this requirement, which need a
+separate compatibility decision.
 
-Ao atualizar o snapshot, confira manifesto e checksum da revisão pública antes
-de mudar os arquivos de origem. Revise tipos, nulabilidade, campos obrigatórios,
-autenticação, ambiente, status, idempotência e cursores. Regere as saídas e
-confira o impacto nos consumidores. Não altere o contrato para inventar um
-endpoint ou contornar uma restrição da API.
+When updating the snapshot, verify the public revision's manifest and checksum
+before changing source files. Review types, nullability, required fields,
+authentication, environment, statuses, idempotency and cursors. Regenerate
+outputs and check consumer impact. Do not change the contract to invent an
+endpoint or bypass an API restriction.
 
-## Organização
+## Organization
 
-| Caminho | Responsabilidade |
+| Path | Responsibility |
 | --- | --- |
-| `RaimsClient` | Configuração isolada e composição dos serviços |
-| `service` | Métodos tipados por recurso, gerados |
-| `param` | Entradas imutáveis com builders, geradas |
-| `model` | Respostas e objetos aninhados, gerados |
-| `internal/ApiRequestor` | Transporte HTTP, leitura, retries e erros |
-| `ApiResource` e `ApiParams` | Preservação do JSON e acesso aos tipos |
-| `RaimsCollection` | Cursores e iteração |
-| `WebhookUtility` | Autenticação do corpo original |
-| `src/main/resources/com/raims/contract.json` | Metadados gerados usados na validação |
+| `RaimsClient` | Isolated configuration and service composition |
+| `service` | Generated typed resource methods |
+| `param` | Generated immutable inputs with builders |
+| `model` | Generated responses and nested objects |
+| `internal/ApiRequestor` | HTTP transport, reads, retries and errors |
+| `ApiResource` and `ApiParams` | JSON preservation and typed access |
+| `RaimsCollection` | Cursors and iteration |
+| `WebhookUtility` | Original-body authentication |
+| `src/main/resources/com/raims/contract.json` | Generated metadata used for validation |
 
-## Impacto desta implementação
+## Implementation impact
 
-| Comportamento | Fonte | Consumidores | Persistência | Validação |
+| Behavior | Source | Consumers | Persistence | Validation |
 | --- | --- | --- | --- | --- |
-| Novo cliente Java da API pública | Contrato público fixado | Aplicações Java | Nenhuma migration | Todas as operações e status publicados |
-| Paginação, erros e respostas pendentes | Contrato HTTP existente | Serviços e modelos Java | Nenhuma | Transporte local e cenários de protocolo |
-| Recebimento de eventos | Protocolo de assinatura publicado | Backend do integrador | Deduplicação pertence ao integrador | Bytes originais, relógio e rotação |
-| Orientação do atendimento | Guias públicos na primeira distribuição | Catálogo existente do chat | Nenhuma | Pendente até disponibilidade pública |
+| New Java public API client | Pinned public contract | Java applications | No migration | Every published operation and status |
+| Pagination, errors and pending responses | Existing HTTP contract | Java services and models | None | Local transport and protocol scenarios |
+| Receiving events | Published signing protocol | Integrator backend | Deduplication belongs to the integrator | Original bytes, clock checks and rotation |
+| Support guidance | Public guides at the first distribution | Existing chat catalog | None | Pending public availability |
 
-A entrega não altera o contrato nem o comportamento da Public API. Os
-consumidores CLI, MCP e SDKs existentes continuam no mesmo contrato; não
-precisam ser regenerados por causa deste cliente. O SDK usa somente chave de
-API, e os parâmetros exclusivos de OAuth não entram nas assinaturas Java.
+This delivery does not change the Public API contract or behavior. Existing
+CLI, MCP and SDK consumers remain on the same contract and do not need
+regeneration because of this client. The SDK uses only API keys; OAuth-only
+parameters are not included in Java signatures.
 
-## Validação local
+## Local validation
 
-`mvn verify` confere os arquivos gerados e chama
-`Developer-Toolkit/scripts/release-preflight/java_sdk.py`. O launcher
-`python scripts/check.py` usa o mesmo adaptador para preparar e validar o
-pacote. O Maven não mantém uma segunda suíte: os arquivos Java de teste,
-fixtures, consumidores e evidências são materializados somente em `.tmp`.
+`mvn verify` checks generated files and calls
+`Developer-Toolkit/scripts/release-preflight/java_sdk.py`. The
+`python scripts/check.py` launcher uses the same adapter to prepare and validate
+the package. Maven does not maintain a second suite: Java test files, fixtures,
+consumers and evidence are materialized only in `.tmp`.
 
-Prepare Maven e os JDKs 11, 21 e 25. O adaptador aceita `--maven` e
-`--jdk-home 11=caminho`, `--jdk-home 21=caminho` e `--jdk-home 25=caminho`.
-Também reconhece `RAIMS_MAVEN`, `RAIMS_MAVEN_HOME`, `RAIMS_JAVA_11_HOME`,
-`RAIMS_JAVA_21_HOME` e `RAIMS_JAVA_25_HOME`, além das ferramentas já preparadas
-em `.tmp/raims-java-sdk/tools`. Não instala ferramentas globalmente.
+Prepare Maven and JDKs 11, 21 and 25. The adapter accepts `--maven` and
+`--jdk-home 11=path`, `--jdk-home 21=path` and `--jdk-home 25=path`. It also
+recognizes `RAIMS_MAVEN`, `RAIMS_MAVEN_HOME`, `RAIMS_JAVA_11_HOME`,
+`RAIMS_JAVA_21_HOME` and `RAIMS_JAVA_25_HOME`, along with tools already prepared
+in `.tmp/raims-java-sdk/tools`. It does not install tools globally.
 
-O gate cobre cada operação e status publicado, transporte real em loopback,
-perda de resposta, orçamento de retries, paginação após falha, concorrência,
-cancelamento, fechamento, webhooks e os formatos de schema que causaram as
-regressões do gerador. Confere os artefatos e as dependências efetivas do
-pacote, incluindo transitivas, contra a base OSV. Erro de consulta ou
-vulnerabilidade impede aprovação; não há chamada à API financeira real.
-Há regressões para preservar erros fatais sem retry, inclusive falta de
-memória em uma JVM isolada, e para fechar o cliente antes e durante a espera
-entre tentativas, com várias operações ou interrupção da thread. As cópias
-de contrato também conferem referências escalares e estabilidade das constantes.
+The gate covers every published operation and status, real loopback transport,
+lost responses, retry budgets, pagination after failures, concurrency,
+cancellation, closure, webhooks and the schema forms involved in generator
+regressions. It checks artifacts and the package's effective dependencies,
+including transitive dependencies, against the OSV database. Query errors or
+vulnerabilities prevent approval; no real financial API is called. Regressions
+also preserve fatal errors without retry, including memory exhaustion in an
+isolated JVM, and close the client before and during retry waits, with multiple
+operations or thread interruption. Contract copies also check scalar references
+and constant stability.
 
-O modo interno `--verify-built` recebe o JAR já produzido pelo Maven e seu
-classpath de dependências, evitando um build recursivo. A opção interna
-`raims.skipSdkCheck` serve ao build conduzido pelo próprio adaptador; ela não
-aprova o pacote nem desativa a conferência dos gerados. Use o gate completo
-para avaliar uma entrega. Fontes alteradas durante a rodada invalidam o aceite.
+The internal `--verify-built` mode receives the JAR already produced by Maven
+and its dependency classpath, avoiding a recursive build. The internal
+`raims.skipSdkCheck` option supports builds run by the adapter itself; it does
+not approve the package or disable generated-file checks. Use the full gate
+to assess a delivery. Source changes during the run invalidate approval.
 
-## Build e distribuição
+## Build and distribution
 
-Use Java 11 ou superior e Maven. `mvn package` gera JAR, fontes e Javadoc,
-com outputs em `../.tmp/raims-java-sdk/build`. Dependências e consumidores
-de validação também ficam em `.tmp`. Inspecione os três artefatos e confira
-o consumo de um JAR instalado, além do build do próprio projeto.
+Use Java 11 or newer and Maven. `mvn package` produces the JAR, sources and
+Javadoc in `../.tmp/raims-java-sdk/build`. Validation dependencies and consumers
+also stay in `.tmp`. Inspect all three artifacts and verify consumption of an
+installed JAR in addition to building the project itself.
 
-A distribuição inicial usa `raimshq/raims-java`, com fontes na `main` e
-releases versionadas no GitHub. O artefato Maven tem coordenadas
-`com.raims:raims-java`. JAR, POM, fontes, Javadoc, manifesto e hashes são
-conferidos após o download da release. A instalação do JAR com seu POM não
-depende do Toolkit privado.
+The initial distribution uses `raimshq/raims-java`, with source on `main` and
+versioned GitHub releases. The Maven artifact coordinates are
+`com.raims:raims-java`. Verify the JAR, POM, sources, Javadoc, manifest and hashes
+after downloading the release. Installing the JAR with its POM does not depend
+on the private Toolkit.
 
-O perfil de publicação de fontes não contém workflows executáveis nem altera
-infraestrutura. Execute os gates `Commit` e `Deploy` antes do commit e da
-publicação, com SCA, SAST e origem conferidos. A autorização desta etapa é
-somente GitHub. Maven Central, assinatura e configuração de CI CodeBuild
-continuam exigindo sua preparação e autorização próprias. Não anuncie o
-pacote no Maven Central antes de confirmar a versão e sua instalação.
+The source-publication profile contains no executable workflows and does not
+change infrastructure. Run the `Commit` and `Deploy` gates before committing
+and publishing, with SCA, SAST and source verification. This stage authorizes
+GitHub only. Maven Central, signing and CodeBuild CI configuration still require
+their own preparation and authorization. Do not announce a Maven Central
+package before confirming the version and its installation.
 
-Na primeira distribuição, publique os guias BR/EN `integracoes/sdk-java` no
-`raims-developer-docs`, usando a versão realmente disponível. Registre o
-changelog na data efetiva e regenere o catálogo público que já alimenta o
-atendimento. Valide a orientação nos dois idiomas. O contrato de contexto
-e as ferramentas financeiras não mudam por causa da biblioteca. As pendências
-permanecem em `TODO.md` até confirmar pacote, fontes e orientação publicada.
+At the first distribution, publish BR/EN guides at `integracoes/sdk-java` in
+`raims-developer-docs`, using the version actually available. Record the
+changelog on the actual availability date and regenerate the public catalog
+already used by support. Validate guidance in both languages. The context
+contract and financial tools do not change because of this library. Keep
+the items in `TODO.md` open until the package, published sources and guidance
+are confirmed.

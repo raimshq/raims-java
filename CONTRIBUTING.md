@@ -1,39 +1,40 @@
-# Contribuir
+# Contributing
 
-Leia `AGENTS.md` e [manutenção](docs/maintenance.md). Preserve o contrato e
-regenere os outputs por `python scripts/generate.py`. Confira a geração
-offline com `--check`, compile em Java 11 e valide o JAR, fontes e Javadoc.
-`mvn verify` executa o validador canônico do Developer Toolkit nos JDKs 11, 21 e
-25. O atalho `python scripts/check.py` também prepara e confere o pacote.
-Consulte os caminhos de ferramentas e a auditoria de dependências em
-[validação local](docs/maintenance.md#validação-local).
+Read `AGENTS.md` and the [maintenance guide](docs/maintenance.md). Preserve the
+contract and regenerate outputs with `python scripts/generate.py`. Check
+offline generation with `--check`, compile for Java 11 and validate the JAR,
+sources and Javadoc. `mvn verify` runs the canonical Developer Toolkit validator
+on JDKs 11, 21 and 25. The `python scripts/check.py` shortcut also prepares and
+checks the package. See [local validation](docs/maintenance.md#local-validation)
+for tool paths and dependency auditing.
 
-Os cenários independentes devem cobrir todas as operações e status de sucesso,
-método, caminho, query, JSON, resultados sem corpo e `202`. Confira também:
+Independent scenarios must cover every operation and success status, method,
+path, query, JSON, empty responses and `202`. Also verify:
 
-- Null, ausência, false, zero, mapas vazios, campos futuros e inteiros exatos.
-- Tipos dos builders, respostas, listas, mapas e objetos aninhados.
-- Isolamento entre clientes, opções por chamada e chamadas concorrentes.
-- Redirects, timeout, interrupção, limite de corpo e UTF-8 inválido.
-- Retry somente de leitura, `Retry-After` e ausência de retry em escritas.
-- Perda da resposta com contagem de envios e diagnósticos, inclusive quando
-  outra biblioteca já tiver inicializado retries globais da JVM.
-- Navegação nos dois sentidos, filtros, páginas vazias e ciclos de cursor.
-- Recuperação do iterador após falha temporária, fechamento do cliente e
-  cancelamento das suas requisições em andamento.
-- Schemas usados em entrada e resposta e coleções aninhadas no gerador.
-- Referências escalares, aliases anuláveis, itens e mapas referenciados, com
-  preservação das constantes públicas em refatorações equivalentes.
-- Erros fatais do worker preservados sem retry e cancelamento da espera de
-  retry por fechamento ou interrupção, conservando os metadados disponíveis.
-- Webhooks com bytes originais, segredo Base62, relógio, rotação e headers ambíguos.
-- Diagnósticos redigidos e observers que falham ou iniciam outras chamadas.
+- Null, omission, false, zero, empty maps, future fields and exact integers.
+- Builder types, responses, lists, maps and nested objects.
+- Isolation between clients, per-request options and concurrent calls.
+- Redirects, timeout, interruption, body limits and invalid UTF-8.
+- Read-only retries, `Retry-After` and no retries for writes.
+- Lost responses, counting sends and diagnostics, including when another
+  library has already initialized global JVM retries.
+- Navigation in both directions, filters, empty pages and cursor cycles.
+- Iterator recovery after a temporary failure, client closure and cancellation
+  of its in-flight requests.
+- Schemas shared by inputs and responses, and nested collections in the generator.
+- Scalar references, nullable aliases, referenced items and maps, preserving
+  public constants through equivalent refactors.
+- Fatal worker errors propagated without retry, and retry waits cancelled by
+  closure or interruption while retaining available metadata.
+- Webhooks with original bytes, Base62 secrets, clock checks, rotation and
+  ambiguous headers.
+- Redacted diagnostics and observers that fail or initiate other calls.
 
-Use receptores em loopback e dependências isoladas. Testes, simuladores,
-consumidores, ferramentas e relatórios ficam somente em
-`C:\server\raims\.tmp\raims-java-sdk`. Não chame a API real, mesmo com
-chave Sandbox, para validar a biblioteca. Encerre processos e confira portas.
+Use loopback receivers and isolated dependencies. Tests, simulators, consumers,
+tools and reports belong only in `C:\server\raims\.tmp\raims-java-sdk`.
+Do not call the real API, even with a Sandbox key, to validate the library.
+Stop processes and verify that their ports are released.
 
-Revise todos os arquivos modificados e novos, `git diff` e `git diff --cached`.
-Preserve licenças e atribuições. Mantenha alterações sem commit e sem staging;
-criação de remoto, push, release e publicação são etapas independentes.
+Review all modified and new files, `git diff` and `git diff --cached`.
+Preserve licenses and attribution. Leave changes uncommitted and unstaged;
+remote creation, pushes, releases and publication are separate steps.

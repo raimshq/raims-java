@@ -1,36 +1,36 @@
 # TODO
 
-- [ ] Definir a API Java estável antes da primeira distribuição. Identificar
-  classes, métodos, assinaturas e constantes protegidos por compatibilidade,
-  excluir os helpers internos dessa garantia e acrescentar uma base aprovada
-  ao validador canônico para conferir futuras versões.
-- [ ] Definir a interface tipada dos metadados de paginação e o retorno de
-  `nextPage()` e `previousPage()` antes da primeira distribuição. Preservar
-  filtros, opções, null, navegação e recuperação após falhas; validar os
-  consumidores e atualizar os guias quando essa evolução for implementada.
-- [ ] Medir o consumo do executor e das conexões sob cargas isoladas antes de
-  oferecer configuração de recursos. Manter testes e evidências em `.tmp` e
-  escolher a política pelas medições, preservando timeout, cancelamento e a
-  proibição de retries automáticos de escrita.
-- [ ] Automatizar futuras releases do GitHub nos runners autorizados, vinculando
-  o mesmo commit aos checks, aos hashes dos assets e ao teste de instalação.
-  Essa automação não deve publicar no Maven Central.
-- [ ] Preparar a distribuição Maven Central: confirmar titularidade do namespace
-  `com.raims`, artefato `raims-java`, assinatura e fluxo de CI nos runners
-  autorizados. Validar o mesmo commit e conferir uma instalação limpa do
-  destino após publicação autorizada.
-- [ ] Incluir o SDK Java nas fontes do atendimento na primeira distribuição.
-  Criar os guias BR/EN `integracoes/sdk-java` no `raims-developer-docs`, com
-  finalidade, quando sugerir Java, instalação e atualização, backend, acesso,
-  permissões, ambiente pela chave, simulações, disponibilidade e limites,
-  paginação, idempotência, resultados pendentes, erros, webhooks e fechamento
-  do cliente compartilhado. Conferir
-  `Raims-Chat/docs/knowledge-sources.md`, regenerar o catálogo público existente
-  e validar a orientação nos dois idiomas. A biblioteca não cria estados do
-  atendimento ou consultas financeiras: não exige alteração no contrato de
-  contexto ou nas ferramentas atuais. Concluir somente após confirmar pacote,
-  fontes publicadas, catálogo e orientação.
-- [ ] Publicar a nota de changelog Java em
-  `raims-developer-docs/content/docs/changelog/post`, com data real da
-  disponibilização e links para os guias e a versão confirmada. A implementação
-  local permanece pendente, sem anúncio de disponibilidade pública.
+- [ ] Define the stable Java API before the first distribution. Identify the
+  classes, methods, signatures and constants protected by compatibility,
+  exclude internal helpers from that guarantee, and add an approved baseline
+  to the canonical validator for checking future versions.
+- [ ] Define typed pagination metadata and the return types of `nextPage()`
+  and `previousPage()` before the first distribution. Preserve filters,
+  options, null, navigation and recovery after failures; validate consumers
+  and update the guides when this improvement is implemented.
+- [ ] Measure executor and connection usage under isolated workloads before
+  offering resource configuration. Keep tests and evidence in `.tmp` and
+  choose the policy from measurements, preserving timeout, cancellation and
+  the prohibition on automatic write retries.
+- [ ] Automate future GitHub releases on authorized runners, linking the same
+  commit to checks, asset hashes and the installation test. This automation
+  must not publish to Maven Central.
+- [ ] Prepare Maven Central distribution: confirm ownership of the `com.raims`
+  namespace, the `raims-java` artifact, signing and the CI flow on authorized
+  runners. Validate the same commit and verify a clean installation from the
+  destination after authorized publication.
+- [ ] Include the Java SDK in support knowledge sources at the first
+  distribution. Create BR/EN guides at `integracoes/sdk-java` in
+  `raims-developer-docs`, covering purpose, when to suggest Java, installation
+  and updates, backend usage, access, permissions, environment from the key,
+  simulations, availability and limits, pagination, idempotency, pending
+  results, errors, webhooks and closure of the shared client. Check
+  `Raims-Chat/docs/knowledge-sources.md`, regenerate the existing public catalog
+  and validate guidance in both languages. The library does not create support
+  states or financial queries: it requires no changes to the context contract
+  or existing tools. Mark complete only after confirming the package, published
+  sources, catalog and guidance.
+- [ ] Publish the Java changelog entry in
+  `raims-developer-docs/content/docs/changelog/post`, with the actual
+  availability date and links to the guides and confirmed version. The local
+  implementation remains pending, without announcing public availability.

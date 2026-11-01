@@ -1,15 +1,16 @@
-# Segurança
+# Security
 
-Use o SDK somente no backend e mantenha a chave de API e o segredo de webhook
-em armazenamento protegido. Não registre credenciais, corpos, documentos
-pessoais ou links temporários. Recursos e parâmetros têm representação
-padrão redigida; `getRawJson()` e `toJson()` dão acesso explícito ao conteúdo.
+Use the SDK only on the backend and keep the API key and webhook secret in
+protected storage. Do not log credentials, bodies, personal documents or
+temporary links. Resources and parameters have redacted default
+representations; `getRawJson()` and `toJson()` provide explicit access to their
+contents.
 
-O transporte usa TLS verificado, bloqueia redirects e não transfere arquivos
-externos. A chave define empresa e ambiente. Permissões e regras financeiras
-são validadas pela API. Valide a assinatura antes de processar um webhook e
-deduplicate eventos em armazenamento durável.
+The transport verifies TLS, blocks redirects and does not transfer external
+files. The key determines the company and environment. The API enforces
+permissions and financial rules. Verify the signature before processing a
+webhook and deduplicate events in durable storage.
 
-Relate uma vulnerabilidade em `security@raims.com`, com versão, impacto e uma
-reprodução mínima sem dados reais. Não envie chaves ou informações de clientes
-nem publique esses dados em issues abertas.
+Report vulnerabilities to `security@raims.com`, including the version, impact
+and a minimal reproduction without real data. Do not send keys or customer
+information or publish these details in public issues.

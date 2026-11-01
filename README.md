@@ -1,34 +1,35 @@
 # Raims Java
 
-SDK Java para integrar aplicações de servidor à API pública da Raims.
-Requer Java 11 ou superior e usa Apache HttpComponents para HTTP e Gson para JSON.
+Official Java SDK for the Raims public API.
+Requires Java 11 or newer and uses Apache HttpComponents for HTTP and Gson for JSON.
 
-## Instalação pelo GitHub
+## Install from GitHub
 
-A distribuição inicial usa as [releases deste repositório](https://github.com/raimshq/raims-java/releases/latest).
-O pacote ainda não está publicado no Maven Central.
+The initial distribution is available through
+[this repository's releases](https://github.com/raimshq/raims-java/releases/latest).
+The package is not yet published on Maven Central.
 
-Baixe os arquivos da release estável atual com GitHub CLI:
+Download the assets from the current stable release with GitHub CLI:
 
 ```sh
 gh release download --repo raimshq/raims-java --pattern '*' --dir raims-java-release
 ```
 
-Instale o JAR e seu POM no repositório Maven local:
+Install the JAR and its POM in your local Maven repository:
 
 ```sh
 mvn install:install-file -Dfile=raims-java-release/raims-java.jar -DpomFile=raims-java-release/raims-java.pom
 ```
 
-Adicione `com.raims:raims-java` às dependências do seu projeto, usando a versão
-declarada no POM baixado. O Maven resolve as dependências transitivas pelo POM.
-A aplicação consumidora precisa de Java 11 ou superior; a instalação do JAR
-não exige Python nem o Toolkit de engenharia.
+Add `com.raims:raims-java` to your project's dependencies, using the version
+declared in the downloaded POM. Maven resolves transitive dependencies through
+the POM. The consuming application needs Java 11 or newer; installing the JAR
+does not require Python or the engineering Toolkit.
 
-Veja a [instalação e atualização](docs/installation.md) para conferir os hashes,
-usar fontes e Javadoc e atualizar uma instalação existente.
+See [installation and updates](docs/installation.md) to verify hashes, use
+sources and Javadoc, and update an existing installation.
 
-## Primeiro uso
+## First request
 
 ```java
 import com.raims.RaimsClient;
@@ -43,17 +44,17 @@ try (RaimsClient raims = new RaimsClient(System.getenv("RAIMS_API_KEY"))) {
 }
 ```
 
-A URL-base é `https://api.raims.com` tanto para Sandbox quanto para Produção.
-A chave determina empresa, ambiente e permissões. Guarde-a no servidor, fora
-do código, do navegador e dos logs. Reutilize o cliente entre requisições e
-feche-o ao encerrar sua aplicação ou o escopo de uso.
+The base URL is `https://api.raims.com` for both Sandbox and Production.
+The key determines the company, environment and permissions. Store it on the
+server, outside source code, the browser and logs. Reuse the client across
+requests and close it when your application or usage scope ends.
 
-## Criar uma cobrança
+## Create a charge
 
-`customerId`, `chargeDueDate` e `chargeIdempotencyKey` devem ser definidos e
-persistidos pela aplicação para o pedido antes da chamada. O vencimento usa
-segundos Unix UTC. Após perder uma resposta, reutilize a mesma chave e todos
-os parâmetros, inclusive o vencimento.
+The application must define and persist `customerId`, `chargeDueDate` and
+`chargeIdempotencyKey` for the order before making the request. The due date
+uses UTC Unix seconds. After losing a response, reuse the same key and all
+parameters, including the due date.
 
 ```java
 import com.raims.RaimsClient;
@@ -67,7 +68,7 @@ try (RaimsClient raims = new RaimsClient(System.getenv("RAIMS_API_KEY"))) {
             .setCustomerId(customerId)
             .setAmountCents(15000)
             .setDueDate(chargeDueDate)
-            .setTitle("Pedido 1234")
+            .setTitle("Order 1234")
             .build(),
         RequestOptions.builder().setIdempotencyKey(chargeIdempotencyKey).build());
 
@@ -76,11 +77,11 @@ try (RaimsClient raims = new RaimsClient(System.getenv("RAIMS_API_KEY"))) {
 }
 ```
 
-`15000` representa R$ 150,00. O SDK não gera chaves de idempotência nem repete
-escritas automaticamente. HTTP `202` indica um resultado pendente: acompanhe
-o recurso para conhecer a conclusão financeira.
+`15000` represents R$150.00. The SDK does not generate idempotency keys or
+retry writes automatically. HTTP `202` indicates a pending result: follow the
+resource to determine the financial outcome.
 
-## Paginação
+## Pagination
 
 ```java
 try (RaimsClient raims = new RaimsClient(System.getenv("RAIMS_API_KEY"))) {
@@ -90,29 +91,29 @@ try (RaimsClient raims = new RaimsClient(System.getenv("RAIMS_API_KEY"))) {
 }
 ```
 
-O iterador lê as próximas páginas quando necessário e preserva filtros e
-opções. `nextPage()` e `previousPage()` permitem navegação explícita.
-`autoPagingToList(limit)` reúne até o limite escolhido pela aplicação.
+The iterator fetches subsequent pages as needed and preserves filters and
+options. `nextPage()` and `previousPage()` provide explicit navigation.
+`autoPagingToList(limit)` collects up to the limit chosen by the application.
 
-## Recursos
+## Resources
 
 `accounts()`, `balances()`, `customers()`, `charges()`, `paymentLinks()`,
 `refunds()`, `disputes()`, `statements()`, `withdrawals()`,
 `withdrawalDestinations()`, `webhooks()`, `webhookEventTypes()`,
-`simulations().charges()` e `simulations().refunds()`.
+`simulations().charges()` and `simulations().refunds()`.
 
-Use chave Sandbox para as simulações. Os serviços seguem métodos como
-`create`, `retrieve`, `update` e `list`, conforme o recurso.
+Use a Sandbox key for simulations. Services provide methods such as `create`,
+`retrieve`, `update` and `list`, depending on the resource.
 
-## Documentação
+## Documentation
 
-- [Instalação e atualização](docs/installation.md)
-- [Configuração, tipos, respostas e arquivos](docs/usage.md)
-- [Erros, idempotência e retries](docs/errors-and-retries.md)
-- [Recebimento de webhooks](docs/webhooks.md)
-- [Referência dos métodos](docs/reference.md)
-- [Contrato e manutenção](docs/maintenance.md)
-- [Contribuição](CONTRIBUTING.md) e [segurança](SECURITY.md)
-- [Documentação da API](https://docs.raims.com/br/api)
+- [Installation and updates](docs/installation.md)
+- [Configuration, types, responses and files](docs/usage.md)
+- [Errors, idempotency and retries](docs/errors-and-retries.md)
+- [Receiving webhooks](docs/webhooks.md)
+- [Method reference](docs/reference.md)
+- [Contract and maintenance](docs/maintenance.md)
+- [Contributing](CONTRIBUTING.md) and [security](SECURITY.md)
+- [API documentation](https://docs.raims.com/en/api)
 
-Distribuído sob a licença [MIT](LICENSE).
+Distributed under the [MIT license](LICENSE).

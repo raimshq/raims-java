@@ -264,7 +264,7 @@ class Generator:
 
     def generate(self):
         operations = {}
-        reference = ['# Referência do SDK Java\n\n', 'Gerada do contrato público fixado. Parâmetros usam `builder()`; campos omitidos permanecem ausentes. `setCampoNull()` envia null explicitamente. Todos os métodos aceitam `RequestOptions` no último argumento.\n\n', '| Método | Endpoint | Parâmetros | Retorno | Idempotência |\n| --- | --- | --- | --- | --- |\n']
+        reference = ['# Java SDK reference\n\n', 'Generated from the pinned public contract. Parameters use `builder()`; omitted fields remain absent. The `set<Field>Null()` pattern sends explicit null. All methods accept `RequestOptions` as the last argument.\n\n', '| Method | Endpoint | Parameters | Return type | Idempotency |\n| --- | --- | --- | --- | --- |\n']
         clients = MARKER + 'package com.raims;\n\npublic class RaimsServices {\n'
         init = '    protected RaimsServices(com.raims.internal.ApiRequestor requestor) {\n'
         for service, methods in self.services.items():
@@ -343,7 +343,7 @@ class Generator:
                 code += '    public ' + rt + ' ' + method + '(' + ', '.join(signatures + ['com.raims.RequestOptions options']) + ') {\n'
                 code += '        return requestor.request(' + literal(key) + ', ' + pathmap + ', ' + ('params' if pt else 'null') + ', options, ' + rt + '::new);\n    }\n'
                 display = 'simulations().' + ('charges' if service == 'simulationCharges' else 'refunds') if service.startswith('simulation') else service
-                reference.append('| `' + display + '().' + method + '` | `' + op['method'] + ' ' + op['path'] + '` | `' + (self.typename(params_key) if params_key else 'nenhum') + '` | `' + output + '` | ' + ('Sim' if idem else 'Não') + ' |\n')
+                reference.append('| `' + display + '().' + method + '` | `' + op['method'] + ' ' + op['path'] + '` | `' + (self.typename(params_key) if params_key else 'none') + '` | `' + output + '` | ' + ('Yes' if idem else 'No') + ' |\n')
             self.outputs[JAVA + 'service/' + stype + '.java'] = code + '}\n'
         clients += '    private final Simulations simulations;\n    public Simulations simulations() { return simulations; }\n'
         init += '        this.simulations = new Simulations(requestor);\n    }\n'

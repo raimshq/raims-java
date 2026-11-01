@@ -1,42 +1,45 @@
-# Erros, idempotência e retries
+# Errors, idempotency and retries
 
-As falhas HTTP e de transporte usam exceções em `com.raims.exception`. Confira a categoria
-da exceção e os metadados HTTP para decidir a ação da aplicação. Uma falha de
-conexão ou timeout depois do envio não comprova que a escrita foi recusada.
+HTTP and transport failures use exceptions in `com.raims.exception`. Check
+the exception category and HTTP metadata to decide what the application should
+do. A connection failure or timeout after sending does not prove that a write
+was rejected.
 
-O SDK não gera chaves de idempotência e não repete POST, PATCH, PUT ou DELETE
-automaticamente. Defina e persista uma chave por intenção, antes da chamada,
-e envie-a por `RequestOptions` somente nas operações que a aceitam. Após perder
-a resposta, conserve a chave e os mesmos parâmetros; consulte o recurso antes
-de criar uma intenção diferente. Alterar dados ou vencimento pode mudar o
-significado da operação. Os prazos e a retenção da chave seguem o contrato
-da API, sem um cache de idempotência no SDK.
+The SDK does not generate idempotency keys or retry POST, PATCH, PUT or DELETE
+automatically. Define and persist one key per intent before the call, and send
+it through `RequestOptions` only for operations that accept it. After losing a
+response, retain the key and the same parameters; query the resource before
+creating a different intent. Changing data or the due date can change the
+operation's meaning. Key expiration and retention follow the API contract,
+without an idempotency cache in the SDK.
 
-O padrão é não repetir leituras. `setMaxNetworkRetries` permite até cinco
-tentativas extras em falhas de rede e respostas transitórias de leitura.
-`Retry-After` orienta a espera quando aceito pelo cliente; uma espera acima
-do limite suportado retorna a falha para a aplicação decidir quando retomar.
-Uma thread interrompida mantém sua interrupção e encerra a operação.
-O orçamento inclui todos os envios HTTP: com zero retries, uma chamada faz
-no máximo um envio. Cada tentativa feita pelo SDK produz seu próprio
-diagnóstico. A política não depende da configuração global de retries da JVM.
+Reads are not retried by default. `setMaxNetworkRetries` allows up to five
+extra attempts for network failures and transient read responses.
+`Retry-After` determines the delay when accepted by the client; a delay above
+the supported limit returns the failure so the application can decide when
+to resume. An interrupted thread retains its interrupted status and ends the
+operation. The budget includes every HTTP send: with zero retries, a call sends
+at most once. Each SDK attempt produces its own diagnostic record. The policy
+does not depend on the JVM's global retry configuration.
 
-Erros fatais da JVM, como `OutOfMemoryError`, são propagados sem conversão em
-falha de conexão e sem retry. Eles exigem diagnóstico na aplicação; aumentar
-as tentativas não resolve uma falta de memória. O diagnóstico da tentativa
-mantém os metadados HTTP disponíveis e não substitui o erro fatal original.
+Fatal JVM errors, such as `OutOfMemoryError`, propagate without conversion to
+connection failures or retries. They require diagnosis in the application;
+increasing retries does not resolve an out-of-memory condition. Attempt
+diagnostics retain available HTTP metadata and do not replace the original
+fatal error.
 
-Fechar o cliente também interrompe a espera entre tentativas de leitura.
-Uma operação já iniciada termina com `ConnectionException` de cancelamento,
-preservando o status e o `Request-Id` da última tentativa quando disponíveis.
-Uma nova chamada feita depois de `close()` continua sendo recusada antes do HTTP.
+Closing the client also interrupts waits between read attempts. An operation
+already in progress ends with a cancellation `ConnectionException`, preserving
+the last attempt's status and `Request-Id` when available. A new call made after
+`close()` is still rejected before HTTP.
 
-`getLastResponse()` nos recursos e os metadados das exceções preservam status,
-`Request-Id`, `Retry-After` e a indicação de replay idempotente quando enviados.
-Não registre corpos, documentos, URLs temporárias ou credenciais ao reportar
-uma falha. Uma resposta de erro sem o envelope esperado ainda é reportada
-como falha HTTP. Um sucesso com estrutura incompatível é falha de protocolo.
+Resources' `getLastResponse()` and exception metadata preserve status,
+`Request-Id`, `Retry-After` and the idempotency replay indicator when provided.
+Do not log bodies, personal documents, temporary URLs or credentials when
+reporting a failure. An error response without the expected envelope is still
+reported as an HTTP failure. A success response with an incompatible structure
+is a protocol failure.
 
-HTTP `202` é aceito sem transformá-lo em conclusão. Acompanhe o recurso
-pelas consultas e pelos eventos adequados à operação antes de informar
-pagamento, cancelamento ou estorno concluído.
+HTTP `202` is accepted without treating it as completion. Follow the resource
+through the appropriate queries and events before reporting that payment,
+cancellation or refund has completed.

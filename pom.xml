@@ -6,8 +6,8 @@
   <artifactId>raims-java</artifactId>
   <version>0.1.0</version>
   <name>Raims Java</name>
-  <description>Cliente Java para a API pública da Raims.</description>
-  <url>https://docs.raims.com/br/api</url>
+  <description>Official Java SDK for the Raims public API.</description>
+  <url>https://docs.raims.com/en/api</url>
   <scm>
     <connection>scm:git:https://github.com/raimshq/raims-java.git</connection>
     <developerConnection>scm:git:git@github.com:raimshq/raims-java.git</developerConnection>

@@ -1,9 +1,9 @@
-# Receber webhooks
+# Receiving webhooks
 
-Autentique os bytes originais antes de interpretar ou processar o evento.
-`WebhookUtility` usa `webhook-id`, `webhook-timestamp` e `webhook-signature`.
-O segredo de assinatura é o `secret_key` retornado ao criar ou rotacionar o
-webhook e é diferente da chave Bearer da API. Guarde-o em um cofre.
+Authenticate the original bytes before interpreting or processing the event.
+`WebhookUtility` uses `webhook-id`, `webhook-timestamp` and `webhook-signature`.
+The signing secret is the `secret_key` returned when creating or rotating the
+webhook, and differs from the API Bearer key. Keep it in a vault.
 
 ```java
 import com.raims.WebhookUtility;
@@ -18,21 +18,21 @@ Map<String, String> headers = Map.of(
 JsonObject event = WebhookUtility.constructEvent(rawBodyBytes, headers, webhookSecret);
 ```
 
-`rawBodyBytes` contém os bytes recebidos pelo servidor. Espaços, Unicode e
-quebras de linha participam da assinatura; não reserialize o JSON. O método
-`verifySignature` autentica sem interpretar o corpo. `constructEvent` também
-exige um objeto JSON válido em UTF-8. A aplicação valida os dados do evento.
+`rawBodyBytes` contains the bytes received by the server. Whitespace, Unicode
+and line breaks are part of the signature; do not reserialize the JSON.
+`verifySignature` authenticates without interpreting the body. `constructEvent`
+also requires a valid UTF-8 JSON object. The application validates event data.
 
-A tolerância padrão é 300 segundos no passado e no futuro. Mantenha o relógio
-sincronizado. Tolerância zero exige o mesmo segundo, e não desativa a proteção.
-Nomes de headers ignoram maiúsculas; duplicidades e valores ambíguos são
-recusados. Várias assinaturas `v1=` podem coexistir durante a rotação.
+The default tolerance is 300 seconds into the past or future. Keep the clock
+synchronized. Zero tolerance requires the same second and does not disable
+the protection. Header names are case-insensitive; duplicate and ambiguous
+values are rejected. Multiple `v1=` signatures can coexist during rotation.
 
-Antes de responder com sucesso, confira tipo, ambiente e recurso do evento e
-grave o trabalho de forma durável. Deduplicate pelo `id` do corpo; `webhook-id`
-identifica a entrega e não substitui o ID do evento. A assinatura válida não
-impede reentregas dentro da tolerância. Se a gravação falhar, responda com erro
-HTTP para permitir outra entrega. `created_at` no evento usa ISO 8601,
-enquanto o timestamp do header usa segundos Unix.
+Before returning success, check the event type, environment and resource, and
+persist the work durably. Deduplicate by the body's `id`; `webhook-id` identifies
+the delivery and does not replace the event ID. A valid signature does not
+prevent redelivery within the tolerance window. If persistence fails, return
+an HTTP error to allow another delivery. The event's `created_at` uses ISO 8601,
+while the header timestamp uses Unix seconds.
 
-Consulte o [guia de recebimento](https://docs.raims.com/br/integracoes/webhooks/receber-eventos).
+See the [receiving guide](https://docs.raims.com/en/integracoes/webhooks/receber-eventos).
