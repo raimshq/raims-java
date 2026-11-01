@@ -1,0 +1,36 @@
+rules:
+  - id: raims.java.tls-validation-disabled
+    languages: [java]
+    severity: ERROR
+    message: Keep TLS certificate and hostname validation enabled.
+    pattern-either:
+      - pattern: new NoopHostnameVerifier(...)
+      - pattern: NoopHostnameVerifier.INSTANCE
+      - pattern: new TrustAllStrategy(...)
+      - pattern: TrustAllStrategy.INSTANCE
+  - id: raims.java.global-http-retry-policy
+    languages: [java]
+    severity: ERROR
+    message: Configure retries per client without changing JVM-wide HTTP retry policy.
+    pattern: System.setProperty("jdk.httpclient.enableAllMethodRetry", ...)
+  - id: raims.java.shell-command
+    languages: [java]
+    severity: ERROR
+    message: Do not execute shell commands from the SDK.
+    patterns:
+      - pattern-either:
+          - pattern: new ProcessBuilder($SHELL, ...)
+          - pattern: Runtime.getRuntime().exec($SHELL, ...)
+      - metavariable-regex:
+          metavariable: $SHELL
+          regex: (?i)["'](?:cmd(?:\.exe)?|powershell(?:\.exe)?|pwsh(?:\.exe)?|/bin/(?:sh|bash))["']
+  - id: raims.java.embedded-private-key
+    languages: [generic]
+    severity: ERROR
+    message: Load private keys from the application's secret store.
+    pattern-regex: '-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[\s]+[A-Za-z0-9+/=]{32}'
+  - id: raims.java.embedded-github-token
+    languages: [generic]
+    severity: ERROR
+    message: Keep access tokens outside source files.
+    pattern-regex: '\b(?:gh[pousr]_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{82})\b'

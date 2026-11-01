@@ -1,0 +1,74 @@
+# Referência do SDK Java
+
+Gerada do contrato público fixado. Parâmetros usam `builder()`; campos omitidos permanecem ausentes. `setCampoNull()` envia null explicitamente. Todos os métodos aceitam `RequestOptions` no último argumento.
+
+| Método | Endpoint | Parâmetros | Retorno | Idempotência |
+| --- | --- | --- | --- | --- |
+| `accounts().retrieveFees` | `GET /v1/accounts/fees` | `nenhum` | `AccountFees` | Não |
+| `accounts().retrieveNumber` | `GET /v1/accounts/account_number` | `nenhum` | `AccountNumber` | Não |
+| `accounts().retrieveCheckoutSettings` | `GET /v1/accounts/checkout_settings` | `nenhum` | `CheckoutSettings` | Não |
+| `accounts().updateCheckoutSettings` | `PATCH /v1/accounts/checkout_settings` | `UpdateCheckoutSettingsParams` | `CheckoutSettings` | Sim |
+| `accounts().createCheckoutLogoUpload` | `POST /v1/accounts/checkout_settings/logo_uploads` | `CreateCheckoutLogoUploadParams` | `CheckoutAssetUpload` | Sim |
+| `accounts().createCheckoutFaviconUpload` | `POST /v1/accounts/checkout_settings/favicon_uploads` | `CreateCheckoutFaviconUploadParams` | `CheckoutAssetUpload` | Sim |
+| `accounts().deleteCheckoutAssetUpload` | `DELETE /v1/accounts/checkout_settings/uploads/{id}` | `nenhum` | `CheckoutAssetUploadDeleted` | Sim |
+| `accounts().retrieveContext` | `GET /v1/accounts/context` | `nenhum` | `AccountContext` | Não |
+| `balances().retrieve` | `GET /v1/balances` | `nenhum` | `Balance` | Não |
+| `balances().forecast` | `GET /v1/balances/forecast` | `GetBalanceForecastParams` | `BalanceForecast` | Não |
+| `charges().create` | `POST /v1/charges` | `CreateChargeParams` | `ChargeCreated` | Sim |
+| `charges().list` | `GET /v1/charges` | `ListChargesParams` | `ChargeListResponse` | Não |
+| `charges().retrieve` | `GET /v1/charges/{id}` | `nenhum` | `Charge` | Não |
+| `charges().update` | `PATCH /v1/charges/{id}` | `UpdateChargeParams` | `Charge` | Sim |
+| `charges().revoke` | `DELETE /v1/charges/{id}` | `nenhum` | `RevokeChargeResult` | Sim |
+| `charges().retrievePayment` | `GET /v1/charges/{id}/payment` | `nenhum` | `PaymentReceipt` | Não |
+| `charges().retrieveReceipt` | `GET /v1/charges/{id}/receipt` | `nenhum` | `FinancialDocument` | Não |
+| `charges().retrieveBoleto` | `GET /v1/charges/{id}/boleto` | `nenhum` | `FinancialDocument` | Não |
+| `charges().createRefund` | `POST /v1/charges/{id}/refunds` | `CreateRefundParams` | `Refund` | Sim |
+| `charges().listRefunds` | `GET /v1/charges/{id}/refunds` | `ListChargeRefundsParams` | `RefundListResponse` | Não |
+| `charges().retrieveRefundEligibility` | `GET /v1/charges/{id}/refund_eligibility` | `nenhum` | `RefundEligibility` | Não |
+| `charges().statistics` | `GET /v1/charges/statistics` | `GetChargeStatisticsParams` | `ChargeStatistics` | Não |
+| `customers().create` | `POST /v1/customers` | `CreateCustomerParams` | `CustomerCreated` | Sim |
+| `customers().list` | `GET /v1/customers` | `ListCustomersParams` | `CustomerListResponse` | Não |
+| `customers().retrieve` | `GET /v1/customers/{id}` | `nenhum` | `CustomerListItem` | Não |
+| `customers().update` | `PATCH /v1/customers/{id}` | `UpdateCustomerParams` | `CustomerListItem` | Sim |
+| `customers().delete` | `DELETE /v1/customers/{id}` | `nenhum` | `CustomerDeleted` | Não |
+| `customers().deleteBatch` | `DELETE /v1/customers` | `RemoveCustomersParams` | `CustomerBatchDeleted` | Sim |
+| `disputes().list` | `GET /v1/disputes` | `ListDisputesParams` | `DisputeListResponse` | Não |
+| `disputes().retrieve` | `GET /v1/disputes/{id}` | `nenhum` | `Dispute` | Não |
+| `paymentLinks().create` | `POST /v1/payment_links` | `CreatePaymentLinkParams` | `PaymentLink` | Sim |
+| `paymentLinks().list` | `GET /v1/payment_links` | `ListPaymentLinksParams` | `PaymentLinkListResponse` | Não |
+| `paymentLinks().retrieve` | `GET /v1/payment_links/{id}` | `nenhum` | `PaymentLinkDetails` | Não |
+| `paymentLinks().update` | `PATCH /v1/payment_links/{id}` | `UpdatePaymentLinkParams` | `PaymentLink` | Sim |
+| `paymentLinks().sendEmail` | `POST /v1/payment_links/{id}/send_email` | `nenhum` | `PaymentLinkEmailRequestAccepted` | Sim |
+| `refunds().list` | `GET /v1/refunds` | `ListRefundsParams` | `RefundListResponse` | Não |
+| `refunds().retrieve` | `GET /v1/refunds/{id}` | `nenhum` | `Refund` | Não |
+| `refunds().retrieveReceipt` | `GET /v1/refunds/{id}/receipt` | `nenhum` | `FinancialDocument` | Não |
+| `statements().list` | `GET /v1/statements` | `ListStatementsParams` | `StatementListResponse` | Não |
+| `statements().retrieve` | `GET /v1/statements/{id}` | `nenhum` | `Statement` | Não |
+| `webhookEventTypes().list` | `GET /v1/webhook_event_types` | `nenhum` | `WebhookEventTypeListResponse` | Não |
+| `webhooks().create` | `POST /v1/webhooks` | `CreateWebhookParams` | `WebhookCreated` | Sim |
+| `webhooks().list` | `GET /v1/webhooks` | `ListWebhooksParams` | `WebhookListResponse` | Não |
+| `webhooks().retrieve` | `GET /v1/webhooks/{webhook_id}` | `nenhum` | `Webhook` | Não |
+| `webhooks().update` | `PATCH /v1/webhooks/{webhook_id}` | `UpdateWebhookParams` | `Webhook` | Sim |
+| `webhooks().delete` | `DELETE /v1/webhooks/{webhook_id}` | `nenhum` | `DeleteWebhookResult` | Sim |
+| `webhooks().retrieveHealth` | `GET /v1/webhooks/{webhook_id}/health` | `nenhum` | `WebhookHealth` | Não |
+| `webhooks().setPause` | `PATCH /v1/webhooks/{webhook_id}/pause` | `SetWebhookPauseParams` | `WebhookPause` | Sim |
+| `webhooks().rotateSecret` | `POST /v1/webhooks/{webhook_id}/rotate_secret` | `RotateWebhookSecretParams` | `WebhookSecretRotation` | Sim |
+| `webhooks().test` | `POST /v1/webhooks/{webhook_id}/test` | `nenhum` | `WebhookTestAccepted` | Sim |
+| `withdrawalDestinations().list` | `GET /v1/withdrawal_destinations` | `ListWithdrawalDestinationsParams` | `WithdrawalDestinationListResponse` | Não |
+| `withdrawalDestinations().retrieve` | `GET /v1/withdrawal_destinations/{id}` | `nenhum` | `WithdrawalDestination` | Não |
+| `withdrawals().create` | `POST /v1/withdrawals` | `CreateWithdrawalParams` | `Withdrawal` | Sim |
+| `withdrawals().list` | `GET /v1/withdrawals` | `ListWithdrawalsParams` | `WithdrawalListResponse` | Não |
+| `withdrawals().retrieve` | `GET /v1/withdrawals/{id}` | `nenhum` | `Withdrawal` | Não |
+| `withdrawals().retrieveLimits` | `GET /v1/withdrawals/limits` | `nenhum` | `WithdrawalLimits` | Não |
+| `withdrawals().retrieveSummary` | `GET /v1/withdrawals/summary` | `nenhum` | `WithdrawalSummary` | Não |
+| `withdrawals().retrieveAutomaticSettings` | `GET /v1/withdrawals/automatic_settings` | `nenhum` | `AutomaticWithdrawalSettings` | Não |
+| `withdrawals().updateAutomaticSettings` | `PATCH /v1/withdrawals/automatic_settings` | `UpdateAutomaticWithdrawalSettingsParams` | `AutomaticWithdrawalSettings` | Sim |
+| `simulations().charges().confirmPayment` | `POST /v1/simulations/charges/{id}/confirm_payment` | `nenhum` | `ChargeSimulation` | Sim |
+| `simulations().charges().failPayment` | `POST /v1/simulations/charges/{id}/fail_payment` | `nenhum` | `ChargeSimulation` | Sim |
+| `simulations().charges().configureScenario` | `POST /v1/simulations/charges/{id}/scenario` | `ChargeScenarioParams` | `ChargeScenario` | Sim |
+| `simulations().charges().resolveScenario` | `POST /v1/simulations/charges/{id}/resolve` | `ResolveChargeScenarioParams` | `ChargeScenario` | Sim |
+| `simulations().charges().issuePayment` | `POST /v1/simulations/charges/{id}/issue_payment` | `IssueSimulationPaymentParams` | `Charge` | Sim |
+| `simulations().charges().compensateBoleto` | `POST /v1/simulations/charges/{id}/compensate_boleto` | `nenhum` | `ChargeBoletoCompensation` | Sim |
+| `simulations().charges().createRefund` | `POST /v1/simulations/charges/{id}/refunds` | `CreateRefundParams` | `Refund` | Sim |
+| `simulations().refunds().complete` | `POST /v1/simulations/refunds/{id}/complete` | `nenhum` | `Refund` | Sim |
+| `simulations().refunds().fail` | `POST /v1/simulations/refunds/{id}/fail` | `nenhum` | `Refund` | Sim |
