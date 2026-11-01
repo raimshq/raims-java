@@ -117,5 +117,5 @@ At the first distribution, publish BR/EN guides at `integracoes/sdk-java` in
 changelog on the actual availability date and regenerate the public catalog
 already used by support. Validate guidance in both languages. The context
 contract and financial tools do not change because of this library. Keep
-the items in `TODO.md` open until the package, published sources and guidance
-are confirmed.
+the corresponding items in the private workspace backlog, maintained outside
+Git, open until the package, published sources and guidance are confirmed.

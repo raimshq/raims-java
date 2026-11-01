@@ -3,6 +3,9 @@
 Read README, CONTRIBUTING and docs/maintenance.md before changing the SDK.
 
 - Write repository descriptions and Markdown documentation in English.
+- Keep internal TODO lists, backlogs, and roadmaps out of this public repository
+  and its packages. Track operational work in the private workspace backlog
+  maintained outside Git. Do not publish its contents, location, or links.
 - Java 11 or newer, namespace `com.raims` and Maven artifact `com.raims:raims-java`.
 - Consume only the public contract pinned in `contracts`, with its revision and
   SHA-256 verified. Do not import host code or private contracts.
