@@ -12,7 +12,7 @@ concurrency:
 env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONOPTIMIZE: '0'
-  RAIMS_JAVA_TOOLKIT_REF: f515fa526a96c1b5fa823f467898fe004dc77454
+  RAIMS_JAVA_TOOLKIT_REF: 6d12293959120231a6c0f00d0361196061210302
 jobs:
   validateJava:
     name: validateJava
@@ -41,7 +41,7 @@ jobs:
       uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
       with:
         distribution: temurin
-        java-version: 11.0.32.1+1
+        java-version: 11.0.32+101
         architecture: x64
         overwrite-settings: false
     - name: Setup JDK 21
@@ -49,7 +49,7 @@ jobs:
       uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
       with:
         distribution: temurin
-        java-version: 21.0.13+9
+        java-version: 21.0.13+9.0.LTS
         architecture: x64
         overwrite-settings: false
     - name: Setup JDK 25
@@ -57,7 +57,7 @@ jobs:
       uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
       with:
         distribution: temurin
-        java-version: 25.0.5+8
+        java-version: 25.0.5+8.0.LTS
         architecture: x64
         overwrite-settings: false
     - name: Reject tracked files excluded by repository policy
