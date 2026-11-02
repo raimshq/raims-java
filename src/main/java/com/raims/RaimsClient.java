@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 /** Client configuration is isolated per instance. Reuse a client across requests. */
 public final class RaimsClient extends RaimsServices implements AutoCloseable {
-    public static final String VERSION = "0.1.1";
+    public static final String VERSION = "0.1.2";
     private final ApiRequestor requestor;
 
     public RaimsClient(String apiKey) {

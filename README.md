@@ -11,7 +11,7 @@ Add the SDK to your Maven project's `pom.xml`:
 <dependency>
   <groupId>com.raims</groupId>
   <artifactId>raims-java</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
 </dependency>
 ```
 
@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.raims:raims-java:0.1.1'
+    implementation 'com.raims:raims-java:0.1.2'
 }
 ```
 

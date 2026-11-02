@@ -318,7 +318,7 @@ def sign_bundle(artifact, version, files):
             and re.fullmatch(r'[A-F0-9]{40}', fingerprint), 'The configured signing identity is incomplete.')
     gpg, gpgconf = shutil.which('gpg'), shutil.which('gpgconf')
     require(gpg and gpgconf, 'GnuPG and its agent control utility are required for Maven Central signatures.')
-    base = artifact.parent
+    base = Path("/tmp")
     environment = child_environment()
     with tempfile.TemporaryDirectory(prefix='central-sign-', dir=base) as temporary:
         home = Path(temporary) / 'gnupg'

@@ -11,7 +11,7 @@ Add this dependency to your project's `pom.xml`. Maven uses Central by default:
 <dependency>
   <groupId>com.raims</groupId>
   <artifactId>raims-java</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
 </dependency>
 ```
 
@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.raims:raims-java:0.1.1'
+    implementation 'com.raims:raims-java:0.1.2'
 }
 ```
 
@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.raims:raims-java:0.1.1")
+    implementation("com.raims:raims-java:0.1.2")
 }
 ```
 
