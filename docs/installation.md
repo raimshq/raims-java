@@ -66,8 +66,6 @@ python scripts/generate.py --check
 mvn package
 ```
 
-The package is written to `../.tmp/raims-java-sdk/build`. This build does not
-replace the full engineering gate. In the Raims workspace, `mvn verify` and
-`python scripts/check.py` use the Developer Toolkit validator on JDKs 11, 21
-and 25. The [validation requirements](maintenance.md#local-validation) apply
-to release preparation and are not required to consume the published JAR.
+The package, sources, and Javadoc are written to
+`../.tmp/raims-java-sdk/build`. Use the generated JAR and POM together when
+installing the library in your local Maven repository.

@@ -23,8 +23,7 @@ mvn install:install-file -Dfile=raims-java-release/raims-java.jar -DpomFile=raim
 
 Add `com.raims:raims-java` to your project's dependencies, using the version
 declared in the downloaded POM. Maven resolves transitive dependencies through
-the POM. The consuming application needs Java 11 or newer; installing the JAR
-does not require Python or the engineering Toolkit.
+the POM. The consuming application needs Java 11 or newer.
 
 See [installation and updates](docs/installation.md) to verify hashes, use
 sources and Javadoc, and update an existing installation.
@@ -112,7 +111,6 @@ Use a Sandbox key for simulations. Services provide methods such as `create`,
 - [Errors, idempotency and retries](docs/errors-and-retries.md)
 - [Receiving webhooks](docs/webhooks.md)
 - [Method reference](docs/reference.md)
-- [Contract and maintenance](docs/maintenance.md)
 - [Contributing](CONTRIBUTING.md) and [security](SECURITY.md)
 - [API documentation](https://docs.raims.com/en/api)
 
