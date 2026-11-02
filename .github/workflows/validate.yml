@@ -1,0 +1,236 @@
+name: Validate Java SDK
+'on':
+  push:
+    branches:
+    - '**'
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: raims-java-validation-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONOPTIMIZE: '0'
+  RAIMS_JAVA_TOOLKIT_REF: f515fa526a96c1b5fa823f467898fe004dc77454
+jobs:
+  validateJava:
+    name: validateJava
+    if: github.repository == 'raimshq/raims-java'
+    runs-on:
+    - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+    - java-sdk-check
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Checkout the candidate commit
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: 0
+        path: Raims-Java
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: 3.12.14
+    - name: Setup JDK 11
+      id: java11
+      uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+      with:
+        distribution: temurin
+        java-version: 11.0.32.1+1
+        architecture: x64
+        overwrite-settings: false
+    - name: Setup JDK 21
+      id: java21
+      uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+      with:
+        distribution: temurin
+        java-version: 21.0.13+9
+        architecture: x64
+        overwrite-settings: false
+    - name: Setup JDK 25
+      id: java25
+      uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+      with:
+        distribution: temurin
+        java-version: 25.0.5+8
+        architecture: x64
+        overwrite-settings: false
+    - name: Reject tracked files excluded by repository policy
+      run: |
+        import os
+        from pathlib import Path
+        import subprocess
+        import sys
+        checkout = Path(os.environ['GITHUB_WORKSPACE']) / 'Raims-Java'
+        ignored = subprocess.check_output([
+            'git', '-C', str(checkout), 'ls-files', '--cached', '--ignored',
+            '--exclude-from=.gitignore', '-z',
+        ])
+        count = sum(bool(path) for path in ignored.split(b'\0'))
+        if count:
+            print(f'Repository policy rejects {count} tracked ignored file(s).', file=sys.stderr)
+            raise SystemExit(1)
+      shell: python
+    - name: Create a read-only validation source token
+      id: sources
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+      with:
+        client-id: ${{ vars.RAIMS_CI_SOURCE_READER_CLIENT_ID }}
+        private-key: ${{ secrets.RAIMS_CI_SOURCE_READER_PRIVATE_KEY }}
+        owner: raimshq
+        repositories: Raims-Developer-Toolkit
+        permission-contents: read
+    - name: Checkout the reviewed validation tooling
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        repository: raimshq/Raims-Developer-Toolkit
+        ref: ${{ env.RAIMS_JAVA_TOOLKIT_REF }}
+        path: Developer-Toolkit
+        token: ${{ steps.sources.outputs.token }}
+        persist-credentials: false
+    - name: Run the canonical Java SDK checks
+      run: |
+        set -euo pipefail
+        cp Developer-Toolkit/internal/public-repositories/workspace/AGENTS.md AGENTS.md
+        output="$GITHUB_WORKSPACE/.tmp/raims-java-sdk/validate-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+        tools="$GITHUB_WORKSPACE/.tmp/raims-java-sdk/tools"
+        mkdir -p "$tools"
+        curl --fail --silent --show-error --proto '=https' --tlsv1.2 \
+          https://archive.apache.org/dist/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz \
+          --output "$tools/apache-maven-3.9.11-bin.tar.gz"
+        printf '%s  %s\n' \
+          bcfe4fe305c962ace56ac7b5fc7a08b87d5abd8b7e89027ab251069faebee516b0ded8961445d6d91ec1985dfe30f8153268843c89aa392733d1a3ec956c9978 \
+          "$tools/apache-maven-3.9.11-bin.tar.gz" | sha512sum --check --status
+        tar -xzf "$tools/apache-maven-3.9.11-bin.tar.gz" -C "$tools"
+        python Developer-Toolkit/scripts/release-preflight/java_sdk.py \
+          --source "$GITHUB_WORKSPACE/Raims-Java" \
+          --workspace "$GITHUB_WORKSPACE" \
+          --output "$output" \
+          --jdk-home '11=${{ steps.java11.outputs.path }}' \
+          --jdk-home '21=${{ steps.java21.outputs.path }}' \
+          --jdk-home '25=${{ steps.java25.outputs.path }}' \
+          --maven-home "$tools/apache-maven-3.9.11"
+        python - "$output" <<'PY'
+        import hashlib
+        import json
+        import os
+        from pathlib import Path
+        import shutil
+        import subprocess
+        import sys
+        output = Path(sys.argv[1])
+        report = json.loads((output / 'report.json').read_text(encoding='utf-8'))
+        versions = {'11': '11.0.32.1', '21': '21.0.13', '25': '25.0.5'}
+        if (report.get('status') != 'passed' or report.get('sourceUnchanged') is not True
+                or report.get('mode') != 'full' or report.get('physicalTestsOnlyInTmp') is not True
+                or {major: value['version'] for major, value in report['runtimes'].items()} != versions):
+            raise SystemExit('The canonical Java SDK report is invalid.')
+        package = report['package']
+        if package['group'] != 'com.raims' or package['artifact'] != 'raims-java':
+            raise SystemExit('The canonical Maven coordinates differ.')
+        version = package['version']
+        names = {f'raims-java-{version}.jar': 'raims-java.jar',
+                 f'raims-java-{version}-sources.jar': 'raims-java-sources.jar',
+                 f'raims-java-{version}-javadoc.jar': 'raims-java-javadoc.jar'}
+        if set(report['artifacts']) != set(names):
+            raise SystemExit('The canonical artifact inventory differs.')
+        dist = output / 'dist'
+        dist.mkdir()
+        for built, name in names.items():
+            raw = (output / 'sdk-build' / built).read_bytes()
+            if hashlib.sha256(raw).hexdigest() != report['artifacts'][built]['sha256']:
+                raise SystemExit('The approved Maven artifact bytes changed.')
+            (dist / name).write_bytes(raw)
+        source = Path(os.environ['GITHUB_WORKSPACE']) / 'Raims-Java'
+        shutil.copyfile(source / 'pom.xml', dist / 'raims-java.pom')
+        head = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
+        dirty = subprocess.check_output(['git', '-C', str(source), 'status', '--porcelain', '--untracked-files=all'], text=True).strip()
+        if head != os.environ['GITHUB_SHA'] or dirty:
+            raise SystemExit('The canonical Java source identity differs.')
+        files = {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(dist.iterdir())}
+        manifest = {'package': package, 'sourceRevision': head,
+                    'toolkitRevision': os.environ['RAIMS_JAVA_TOOLKIT_REF'], 'javaVersions': versions, 'files': files}
+        (output / 'release-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+        PY
+    - name: Upload canonical Java distribution evidence
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: raims-java-validation-${{ github.run_id }}-${{ github.run_attempt }}
+        path: |
+          .tmp/raims-java-sdk/validate-${{ github.run_id }}-${{ github.run_attempt }}/dist/*
+          .tmp/raims-java-sdk/validate-${{ github.run_id }}-${{ github.run_attempt }}/release-manifest.json
+        if-no-files-found: error
+        retention-days: 14
+        compression-level: 0
+  securityLinux:
+    name: securityLinux
+    if: github.repository == 'raimshq/raims-java'
+    runs-on:
+    - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+    - java-sdk-security
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Checkout the candidate commit
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: 0
+        path: Raims-Java
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: 3.12.14
+    - name: Reject tracked files excluded by repository policy
+      run: |
+        import os
+        from pathlib import Path
+        import subprocess
+        import sys
+        checkout = Path(os.environ['GITHUB_WORKSPACE']) / 'Raims-Java'
+        ignored = subprocess.check_output([
+            'git', '-C', str(checkout), 'ls-files', '--cached', '--ignored',
+            '--exclude-from=.gitignore', '-z',
+        ])
+        count = sum(bool(path) for path in ignored.split(b'\0'))
+        if count:
+            print(f'Repository policy rejects {count} tracked ignored file(s).', file=sys.stderr)
+            raise SystemExit(1)
+      shell: python
+    - name: Create a read-only validation source token
+      id: sources
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+      with:
+        client-id: ${{ vars.RAIMS_CI_SOURCE_READER_CLIENT_ID }}
+        private-key: ${{ secrets.RAIMS_CI_SOURCE_READER_PRIVATE_KEY }}
+        owner: raimshq
+        repositories: Raims-Developer-Toolkit
+        permission-contents: read
+    - name: Checkout the reviewed validation tooling
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        repository: raimshq/Raims-Developer-Toolkit
+        ref: ${{ env.RAIMS_JAVA_TOOLKIT_REF }}
+        path: Developer-Toolkit
+        token: ${{ steps.sources.outputs.token }}
+        persist-credentials: false
+    - name: Run the canonical SDK security checks
+      run: |
+        set -euo pipefail
+        cp Developer-Toolkit/internal/public-repositories/workspace/AGENTS.md AGENTS.md
+        output="$GITHUB_WORKSPACE/.tmp/raims-java-sdk/security-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+        python Developer-Toolkit/scripts/release-preflight/sdk_security.py \
+          --source "$GITHUB_WORKSPACE/Raims-Java" \
+          --workspace "$GITHUB_WORKSPACE" \
+          --repository Raims-Java \
+          --output "$output" \
+          --prepare-tools
+        python -c 'import json,os,sys; r=json.load(open(sys.argv[1],encoding="utf-8")); sys.exit(0 if r.get("status")=="pass" and r.get("repository")=="Raims-Java" and r.get("toolkitRevision")==os.environ["RAIMS_JAVA_TOOLKIT_REF"] else "Canonical SDK security summary is invalid.")' "$output/summary.json"

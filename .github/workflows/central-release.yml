@@ -1,0 +1,122 @@
+name: Publish Java SDK
+'on':
+  release:
+    types:
+    - published
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: raims-java-central-release
+  cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONOPTIMIZE: '0'
+  RAIMS_JAVA_TOOLKIT_REF: f515fa526a96c1b5fa823f467898fe004dc77454
+jobs:
+  validateRelease:
+    permissions:
+      contents: write
+      actions: read
+    if: github.repository == 'raimshq/raims-java' && github.event.action == 'published' && !github.event.release.draft &&
+      !github.event.release.prerelease
+    runs-on:
+    - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+    - java-sdk-release-check
+    timeout-minutes: 25
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Checkout the release commit
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: 0
+        path: Raims-Java
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: 3.12.14
+    - name: Verify release, prior validation, and approved distribution bytes
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: python Raims-Java/scripts/release.py prepare --source Raims-Java --artifact .tmp/raims-java-sdk/central-upload
+    - name: Upload the approved Maven artifacts and public provenance
+      id: upload
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: raims-central-${{ github.run_id }}-${{ github.run_attempt }}
+        path: |
+          .tmp/raims-java-sdk/central-upload/dist/*
+          .tmp/raims-java-sdk/central-upload/release-manifest.json
+        if-no-files-found: error
+        retention-days: 14
+        compression-level: 0
+  publishCentral:
+    needs: validateRelease
+    if: github.repository == 'raimshq/raims-java' && github.event.action == 'published' && !github.event.release.draft &&
+      !github.event.release.prerelease
+    environment:
+      name: maven-central
+      url: https://central.sonatype.com/artifact/com.raims/raims-java
+    runs-on:
+    - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+    - java-sdk-central-publish
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Checkout the release verifier
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: 0
+        path: Raims-Java
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: 3.12.14
+    - name: Download distributions from this validation job
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+      with:
+        artifact-ids: ${{ needs.validateRelease.outputs.artifact_id }}
+        path: .tmp/raims-java-sdk/central-upload
+        merge-multiple: true
+        digest-mismatch: error
+    - name: Verify release and prior CI before requesting signing and registry credentials
+      id: verify
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: python Raims-Java/scripts/release.py verify --source Raims-Java --artifact .tmp/raims-java-sdk/central-upload
+    - name: Sign and publish the exact approved artifacts to Maven Central
+      if: steps.verify.outputs.publishRequired == 'true'
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+        MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        MAVEN_GPG_FINGERPRINT: ${{ vars.MAVEN_GPG_FINGERPRINT }}
+      run: python Raims-Java/scripts/release.py publish --source Raims-Java --artifact .tmp/raims-java-sdk/central-upload
+    - name: Confirm the public Maven Central artifact bytes
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: python Raims-Java/scripts/release.py confirm --source Raims-Java --artifact .tmp/raims-java-sdk/central-upload
+    - name: Preserve the Central deployment receipt
+      if: always() && steps.verify.outputs.publishRequired == 'true'
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: raims-java-central-deployment-${{ github.run_id }}-${{ github.run_attempt }}
+        path: .tmp/raims-java-sdk/deployment.json
+        if-no-files-found: ignore
+        retention-days: 90
+        compression-level: 0

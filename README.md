@@ -3,30 +3,35 @@
 Official Java SDK for the Raims public API.
 Requires Java 11 or newer and uses Apache HttpComponents for HTTP and Gson for JSON.
 
-## Install from GitHub
+## Installation
 
-The initial distribution is available through
-[this repository's releases](https://github.com/raimshq/raims-java/releases/latest).
-The package is not yet published on Maven Central.
+Add the SDK to your Maven project's `pom.xml`:
 
-Download the assets from the current stable release with GitHub CLI:
-
-```sh
-gh release download --repo raimshq/raims-java --pattern '*' --dir raims-java-release
+```xml
+<dependency>
+  <groupId>com.raims</groupId>
+  <artifactId>raims-java</artifactId>
+  <version>0.1.1</version>
+</dependency>
 ```
 
-Install the JAR and its POM in your local Maven repository:
+For Gradle, use Maven Central and add the dependency:
 
-```sh
-mvn install:install-file -Dfile=raims-java-release/raims-java.jar -DpomFile=raims-java-release/raims-java.pom
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.raims:raims-java:0.1.1'
+}
 ```
 
-Add `com.raims:raims-java` to your project's dependencies, using the version
-declared in the downloaded POM. Maven resolves transitive dependencies through
-the POM. The consuming application needs Java 11 or newer.
+Maven and Gradle resolve the SDK's dependencies from its POM. The consuming
+application needs Java 11 or newer.
 
-See [installation and updates](docs/installation.md) to verify hashes, use
-sources and Javadoc, and update an existing installation.
+See [installation and updates](docs/installation.md) for Kotlin DSL, GitHub
+release downloads, checksum verification, sources and Javadoc.
 
 ## First request
 
@@ -112,6 +117,7 @@ Use a Sandbox key for simulations. Services provide methods such as `create`,
 - [Receiving webhooks](docs/webhooks.md)
 - [Method reference](docs/reference.md)
 - [Contributing](CONTRIBUTING.md) and [security](SECURITY.md)
+- [Java SDK guide](https://docs.raims.com/en/integracoes/sdk-java)
 - [API documentation](https://docs.raims.com/en/api)
 
 Distributed under the [MIT license](LICENSE).

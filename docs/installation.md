@@ -1,12 +1,53 @@
 # Installation and updates
 
 The SDK uses Maven coordinates `com.raims:raims-java` and requires Java 11 or
-newer. The first distribution is on
-[GitHub](https://github.com/raimshq/raims-java/releases/latest). It includes the
-JAR, POM, sources, Javadoc, a manifest and `SHA256SUMS`. The package is not yet
-available on Maven Central.
+newer.
 
-## Download the current release
+## Maven
+
+Add this dependency to your project's `pom.xml`. Maven uses Central by default:
+
+```xml
+<dependency>
+  <groupId>com.raims</groupId>
+  <artifactId>raims-java</artifactId>
+  <version>0.1.1</version>
+</dependency>
+```
+
+## Gradle
+
+For Groovy DSL, add Maven Central and the dependency to `build.gradle`:
+
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.raims:raims-java:0.1.1'
+}
+```
+
+For Kotlin DSL, use `build.gradle.kts`:
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("com.raims:raims-java:0.1.1")
+}
+```
+
+Both build tools resolve the runtime dependencies from the SDK's POM. Editors
+can also download its sources and Javadoc from Maven Central.
+
+## GitHub release downloads
+
+[GitHub releases](https://github.com/raimshq/raims-java/releases/latest) include
+the JAR, POM, sources, Javadoc, a manifest and `SHA256SUMS`.
 
 Use GitHub CLI to download all assets from the current stable release into a
 new folder:
@@ -28,7 +69,7 @@ In PowerShell, use `Get-FileHash -Algorithm SHA256` to check each file.
 Checksums detect differences between files; also verify the official repository,
 tag and release commit.
 
-## Install in your local Maven repository
+### Install a downloaded release locally
 
 Run this command from the folder containing `raims-java-release`:
 
@@ -47,10 +88,13 @@ them to the library.
 
 ## Update
 
-Download the current stable release into another folder, verify its hashes
-and repeat the local installation. Then update the dependency version in the
-consuming project and run your integration tests. The download selects the
-current release at that moment; it does not update projects automatically.
+Choose a released version, update it in your Maven or Gradle dependency and
+run your integration tests. Use a fixed version so that builds keep using the
+version you have tested.
+
+For GitHub downloads, download the release into another folder, verify its
+hashes and repeat the local installation before updating the dependency.
+Downloading a release does not update existing projects automatically.
 
 Use the SDK on the server. Keep the API key outside source code, the browser
 and logs. The base URL is the same in both environments; the company,
@@ -66,6 +110,6 @@ python scripts/generate.py --check
 mvn package
 ```
 
-The package, sources, and Javadoc are written to
-`../.tmp/raims-java-sdk/build`. Use the generated JAR and POM together when
-installing the library in your local Maven repository.
+The package, sources and Javadoc are written to the directory configured by
+`raims.build.directory` in `pom.xml`. Use the generated JAR and POM together
+when installing the library in your local Maven repository.
