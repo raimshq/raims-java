@@ -1,5 +1,6 @@
 package com.raims.exception;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.raims.ApiResponse;
@@ -23,9 +24,12 @@ public class RaimsException extends RuntimeException {
     public String getRequestId() { return response == null ? null : response.getRequestId(); }
     public String getRetryAfter() { return response == null ? null : response.getRetryAfter(); }
     public String getCode() { return text("code"); }
-    public String getType() { return text("type"); }
     public String getApiMessage() { return text("message"); }
-    public JsonElement getErrors() { return error != null && error.has("errors") ? error.get("errors").deepCopy() : null; }
+    /** Returns a copy of the field validation details, or null when no details array is present. */
+    public JsonArray getDetails() {
+        JsonElement details = error == null ? null : error.get("details");
+        return details != null && details.isJsonArray() ? details.getAsJsonArray().deepCopy() : null;
+    }
     public JsonObject getApiError() { return error == null ? null : error.deepCopy(); }
     private String text(String key) {
         JsonElement value = error == null ? null : error.get(key);

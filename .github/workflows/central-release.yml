@@ -12,7 +12,7 @@ concurrency:
 env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONOPTIMIZE: '0'
-  RAIMS_JAVA_TOOLKIT_REF: ff8c5f55e3b2519989a19a44f75f6d8d6edd65cf
+  RAIMS_JAVA_TOOLKIT_REF: ad7ef9f75e3b21104fd13fa5762501c851dcccd9
 jobs:
   validateRelease:
     permissions:

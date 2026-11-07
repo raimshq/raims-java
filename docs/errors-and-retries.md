@@ -5,6 +5,13 @@ the exception category and HTTP metadata to decide what the application should
 do. A connection failure or timeout after sending does not prove that a write
 was rejected.
 
+Use `getCode()` to identify an API error, `getApiMessage()` to read its message
+and `getDetails()` to inspect field validation details. Each detail contains
+`field`, `code` and `message`. `getDetails()` returns a copy of the JSON array,
+or `null` when the response has no details array. An empty array remains empty.
+The default exception message and `toString()` omit the API message and payload;
+read these values explicitly only when needed.
+
 The SDK does not generate idempotency keys or retry POST, PATCH, PUT or DELETE
 automatically. Define and persist one key per intent before the call, and send
 it through `RequestOptions` only for operations that accept it. After losing a
@@ -43,3 +50,10 @@ is a protocol failure.
 HTTP `202` is accepted without treating it as completion. Follow the resource
 through the appropriate queries and events before reporting that payment,
 cancellation or refund has completed.
+
+## Migrating error handling from 0.1
+
+Version 0.2 removes `getType()` and `getErrors()`. Use `getCode()` to choose
+how to handle an API failure and `getDetails()` for field validation errors.
+`getApiMessage()` returns the API message explicitly; the default exception
+message remains generic.

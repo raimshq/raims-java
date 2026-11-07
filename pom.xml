@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.raims</groupId>
   <artifactId>raims-java</artifactId>
-  <version>0.1.2</version>
+  <version>0.2.0</version>
   <name>Raims Java</name>
   <description>Official Java SDK for the Raims public API.</description>
   <url>https://docs.raims.com/en/integracoes/sdk-java</url>
@@ -12,7 +12,7 @@
     <connection>scm:git:https://github.com/raimshq/raims-java.git</connection>
     <developerConnection>scm:git:git@github.com:raimshq/raims-java.git</developerConnection>
     <url>https://github.com/raimshq/raims-java</url>
-    <tag>v0.1.2</tag>
+    <tag>v0.2.0</tag>
   </scm>
   <licenses>
     <license><name>MIT</name><url>https://opensource.org/licenses/MIT</url><distribution>repo</distribution></license>

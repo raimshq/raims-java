@@ -281,7 +281,6 @@ public final class ApiRequestor implements AutoCloseable {
 
     private static ApiResponse metadata(int status, MessageHeaders headers) {
         String id = safeHeader(headers, "request-id");
-        if (id == null) id = safeHeader(headers, "x-request-id");
         return new ApiResponse(status, id, "true".equalsIgnoreCase(safeHeader(headers, "idempotency-replayed")), safeHeader(headers, "retry-after"));
     }
     private static String safeHeader(MessageHeaders headers, String name) {

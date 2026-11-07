@@ -5,44 +5,28 @@ newer.
 
 ## Maven
 
-Add this dependency to your project's `pom.xml`. Maven uses Central by default:
-
-```xml
-<dependency>
-  <groupId>com.raims</groupId>
-  <artifactId>raims-java</artifactId>
-  <version>0.1.2</version>
-</dependency>
-```
+Open [the artifact on Maven Central](https://central.sonatype.com/artifact/com.raims/raims-java)
+and copy the dependency declaration for the current stable version into your
+project's `pom.xml`. Maven uses Central by default. The declaration includes
+the SDK version; keep that choice under your application's control.
 
 ## Gradle
 
-For Groovy DSL, add Maven Central and the dependency to `build.gradle`:
+Add Maven Central to the repositories in `build.gradle` or `build.gradle.kts`:
 
 ```groovy
 repositories {
     mavenCentral()
 }
-
-dependencies {
-    implementation 'com.raims:raims-java:0.1.2'
-}
 ```
 
-For Kotlin DSL, use `build.gradle.kts`:
+Copy the Groovy or Kotlin dependency declaration for the current stable version
+from [Maven Central](https://central.sonatype.com/artifact/com.raims/raims-java)
+into the file's `dependencies` block. Gradle records the selected version in
+that declaration.
 
-```kotlin
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation("com.raims:raims-java:0.1.2")
-}
-```
-
-Both build tools resolve the runtime dependencies from the SDK's POM. Editors
-can also download its sources and Javadoc from Maven Central.
+Both build tools resolve runtime dependencies from the SDK's POM. Editors can
+also download its sources and Javadoc from Maven Central.
 
 ## GitHub release downloads
 

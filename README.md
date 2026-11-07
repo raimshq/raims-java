@@ -5,33 +5,17 @@ Requires Java 11 or newer and uses Apache HttpComponents for HTTP and Gson for J
 
 ## Installation
 
-Add the SDK to your Maven project's `pom.xml`:
+Copy the Maven or Gradle dependency declaration for the current stable version
+from [Maven Central](https://central.sonatype.com/artifact/com.raims/raims-java)
+into your project. The coordinates are `com.raims:raims-java`.
 
-```xml
-<dependency>
-  <groupId>com.raims</groupId>
-  <artifactId>raims-java</artifactId>
-  <version>0.1.2</version>
-</dependency>
-```
+Maven and Gradle require a version in that declaration. Keep the selected
+version under your application's control, review release notes before an update,
+and test your integration. Both build tools resolve runtime dependencies from
+the SDK's POM. The consuming application needs Java 11 or newer.
 
-For Gradle, use Maven Central and add the dependency:
-
-```groovy
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'com.raims:raims-java:0.1.2'
-}
-```
-
-Maven and Gradle resolve the SDK's dependencies from its POM. The consuming
-application needs Java 11 or newer.
-
-See [installation and updates](docs/installation.md) for Kotlin DSL, GitHub
-release downloads, checksum verification, sources and Javadoc.
+See [installation and updates](docs/installation.md) for repository configuration,
+GitHub release downloads, checksum verification, sources and Javadoc.
 
 ## First request
 
