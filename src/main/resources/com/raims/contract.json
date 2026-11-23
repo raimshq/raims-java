@@ -1,7 +1,7 @@
 {
   "source": {
-    "revision": "0169a1ed165a21748055baa144dd5b2cb84cd940",
-    "sha256": "0d74f3b440ed5650794fe948064221495f51c1bd72c250a7be5036c2719041d1"
+    "revision": "47aed0fee0f57350660595ccad636c4a6464223f",
+    "sha256": "df7f6bd91a7a70ca20a5a6af84eee7f3a246250b14238e9c8349d6aa5aa670b9"
   },
   "services": {
     "accounts": {
@@ -2585,7 +2585,7 @@
           "maxLength": 100,
           "pattern": "^cus_[A-Za-z0-9]+$",
           "example": "cus_1Q2W3E4R5T6Y7U8I9O0P",
-          "description": "ID de um cliente da empresa e do ambiente autenticado. Copie o id retornado no cadastro ou na consulta. Pix direto exige CPF/CNPJ válido. Boleto direto exige nome, e-mail válido, CPF/CNPJ e endereço, incluindo CEP e número; complete esses dados no cadastro do cliente."
+          "description": "ID de um cliente da empresa e do ambiente autenticado. Use o id retornado no cadastro assim que receber a resposta ou consulte o cliente pelo ID. Pix direto exige CPF/CNPJ válido. Boleto direto exige nome, e-mail válido, CPF/CNPJ e endereço, incluindo CEP e número."
         },
         "amount_cents": {
           "type": "integer",
@@ -5583,7 +5583,35 @@
               "charge.failed",
               "refund.requested",
               "refund.completed",
-              "refund.failed"
+              "refund.failed",
+              "charge.updated",
+              "charge.expired",
+              "withdrawal.requested",
+              "withdrawal.completed",
+              "withdrawal.failed",
+              "dispute.opened",
+              "dispute.updated",
+              "dispute.closed",
+              "dispute.funds_debited",
+              "balance.hold.created",
+              "balance.hold.released",
+              "statement.created",
+              "ted.received",
+              "pix_refund.received",
+              "pix.available",
+              "pix.issuance_failed",
+              "boleto.available",
+              "boleto.issuance_failed",
+              "boleto.compensated",
+              "payment_link.created",
+              "payment_link.updated",
+              "refund.accepted",
+              "account.restored",
+              "customer.created",
+              "customer.updated",
+              "customer.deleted",
+              "withdrawal.accepted",
+              "charge.fully_refunded"
             ]
           },
           "minItems": 1,
@@ -5888,7 +5916,7 @@
           "minimum": 0,
           "maximum": 86400,
           "default": 86400,
-          "description": "Período em que o segredo anterior pode continuar assinando envios. Zero gera uma nova assinatura e encerra a validade dos segredos anteriores, inclusive durante uma transição ativa. Requisições já autorizadas ou em andamento podem chegar com a assinatura anterior.",
+          "description": "Período em que o segredo anterior pode continuar assinando envios. Zero gera um novo segredo e encerra a validade dos segredos anteriores, inclusive durante uma transição ativa. Requisições já autorizadas ou em andamento podem chegar com a assinatura anterior.",
           "example": 86400
         }
       },
@@ -7134,7 +7162,35 @@
             "charge.failed",
             "refund.requested",
             "refund.completed",
-            "refund.failed"
+            "refund.failed",
+            "charge.updated",
+            "charge.expired",
+            "withdrawal.requested",
+            "withdrawal.completed",
+            "withdrawal.failed",
+            "dispute.opened",
+            "dispute.updated",
+            "dispute.closed",
+            "dispute.funds_debited",
+            "balance.hold.created",
+            "balance.hold.released",
+            "statement.created",
+            "ted.received",
+            "pix_refund.received",
+            "pix.available",
+            "pix.issuance_failed",
+            "boleto.available",
+            "boleto.issuance_failed",
+            "boleto.compensated",
+            "payment_link.created",
+            "payment_link.updated",
+            "refund.accepted",
+            "account.restored",
+            "customer.created",
+            "customer.updated",
+            "customer.deleted",
+            "withdrawal.accepted",
+            "charge.fully_refunded"
           ],
           "description": "Código usado no campo events do cadastro e da atualização.",
           "example": "charge.paid"
@@ -7544,7 +7600,7 @@
           "type": "string",
           "maxLength": 120,
           "example": "pedido_12345",
-          "description": "Filtra pela referência atual da cobrança no seu sistema, com igualdade do valor completo, incluindo maiúsculas, minúsculas e acentos. Vazio ou ausência não aplica o filtro. Pode ser combinado com os demais filtros; preserve o valor ao navegar por cursor. Após criar ou editar uma cobrança, pode levar alguns segundos para a busca refletir a referência."
+          "description": "Filtra pela referência atual da cobrança no seu sistema. Compara o valor completo, com distinção de maiúsculas, minúsculas e acentos. Cobranças novas ou alteradas podem ficar temporariamente fora dos resultados. Vazio ou ausência ignora o filtro. Mantenha o valor ao navegar por cursor."
         },
         "email": {
           "type": "string",
@@ -7556,7 +7612,7 @@
           "type": "string",
           "maxLength": 64,
           "example": "0,1",
-          "description": "Filtra por um ou mais códigos separados por vírgula, como 0,1. 0 criado, 1 aguardando pagamento, 2 autorizado, 3 em processamento, 4 pago, 5 parcialmente devolvido, 6 devolvido, 7 cancelado, 8 expirado, 9 falha, 10 chargeback, 11 chargeback em análise, 12 chargeback perdido e 13 chargeback ganho. Pode levar alguns segundos para refletir alterações."
+          "description": "Filtra por um ou mais códigos separados por vírgula, como 0,1. 0 criado, 1 aguardando pagamento, 2 autorizado, 3 em processamento, 4 pago, 5 parcialmente devolvido, 6 devolvido, 7 cancelado, 8 expirado, 9 falha, 10 chargeback, 11 chargeback em análise, 12 chargeback perdido e 13 chargeback ganho. A busca pode demorar a refletir o status atual."
         },
         "payment_method": {
           "type": "string",
@@ -7758,7 +7814,7 @@
           "minLength": 2,
           "maxLength": 120,
           "example": "Maria Silva",
-          "description": "Busca pelo nome do cliente, com os cadastros mais recentes primeiro. Deixe vazio para ignorar este filtro."
+          "description": "Busca pelo nome do cliente, com os cadastros mais recentes primeiro. Cadastros novos ou alterados podem ficar temporariamente fora dos resultados. Após renomear um cliente, a busca pelo nome anterior ainda pode devolver o cadastro com o nome novo. Deixe vazio para ignorar este filtro."
         },
         "email": {
           "type": "string",
@@ -7776,7 +7832,7 @@
           "type": "string",
           "maxLength": 120,
           "example": "cliente_12345",
-          "description": "Filtra pela referência atual do cliente no seu sistema, com igualdade do valor completo, incluindo maiúsculas, minúsculas e acentos. Pode ser combinada com os demais filtros. Após criar ou editar o cliente, a busca pode levar alguns segundos para refletir a referência. Mantenha o valor ao navegar por cursor."
+          "description": "Filtra pela referência atual do cliente no seu sistema. Compara o valor completo, com distinção de maiúsculas, minúsculas e acentos. Cadastros novos ou alterados podem ficar temporariamente fora dos resultados. Mantenha o valor ao navegar por cursor."
         }
       },
       "required": []

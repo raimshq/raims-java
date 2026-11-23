@@ -30,21 +30,21 @@ public final class WithdrawalsService {
     public com.raims.model.WithdrawalLimits retrieveLimits(com.raims.RequestOptions options) {
         return requestor.request("GetWithdrawalLimits", java.util.Map.of(), null, options, com.raims.model.WithdrawalLimits::new);
     }
-    /** Consultar saques em processamento. Consulte a quantidade e o valor total dos saques pendentes ou em processamento da empresa. A consulta exige uma chave de API de Produção e não altera o andamento dos pedidos. */
+    /** Consultar saques em processamento. Consulte a quantidade e o valor total dos saques pendentes ou em processamento da empresa. A consulta exige acesso autorizado em Produção e não altera o andamento dos pedidos. */
     public com.raims.model.WithdrawalSummary retrieveSummary() { return retrieveSummary(null); }
-    /** Consultar saques em processamento. Consulte a quantidade e o valor total dos saques pendentes ou em processamento da empresa. A consulta exige uma chave de API de Produção e não altera o andamento dos pedidos. */
+    /** Consultar saques em processamento. Consulte a quantidade e o valor total dos saques pendentes ou em processamento da empresa. A consulta exige acesso autorizado em Produção e não altera o andamento dos pedidos. */
     public com.raims.model.WithdrawalSummary retrieveSummary(com.raims.RequestOptions options) {
         return requestor.request("GetWithdrawalSummary", java.util.Map.of(), null, options, com.raims.model.WithdrawalSummary::new);
     }
-    /** Consultar saque automático. Consulte a ativação, o valor mínimo, o horário diário e a próxima tentativa prevista de saque da empresa. A consulta exige uma chave de API de Produção. */
+    /** Consultar saque automático. Consulte a ativação, o valor mínimo, o horário diário e a próxima tentativa prevista de saque da empresa. A consulta exige acesso autorizado em Produção. */
     public com.raims.model.AutomaticWithdrawalSettings retrieveAutomaticSettings() { return retrieveAutomaticSettings(null); }
-    /** Consultar saque automático. Consulte a ativação, o valor mínimo, o horário diário e a próxima tentativa prevista de saque da empresa. A consulta exige uma chave de API de Produção. */
+    /** Consultar saque automático. Consulte a ativação, o valor mínimo, o horário diário e a próxima tentativa prevista de saque da empresa. A consulta exige acesso autorizado em Produção. */
     public com.raims.model.AutomaticWithdrawalSettings retrieveAutomaticSettings(com.raims.RequestOptions options) {
         return requestor.request("GetAutomaticWithdrawalSettings", java.util.Map.of(), null, options, com.raims.model.AutomaticWithdrawalSettings::new);
     }
-    /** Atualizar saque automático. Ative, desative ou ajuste a tentativa diária de saque para o destino próprio selecionado. Use uma chave de API de Produção. Campos omitidos preservam o valor atual; salvar não solicita um saque imediato. */
+    /** Atualizar saque automático. Ative, desative ou ajuste a tentativa diária de saque para o destino próprio selecionado. Use chave de API ou autorização OAuth de Produção. Campos omitidos preservam o valor atual; salvar não solicita um saque imediato. */
     public com.raims.model.AutomaticWithdrawalSettings updateAutomaticSettings(com.raims.param.UpdateAutomaticWithdrawalSettingsParams params) { return updateAutomaticSettings(params, null); }
-    /** Atualizar saque automático. Ative, desative ou ajuste a tentativa diária de saque para o destino próprio selecionado. Use uma chave de API de Produção. Campos omitidos preservam o valor atual; salvar não solicita um saque imediato. */
+    /** Atualizar saque automático. Ative, desative ou ajuste a tentativa diária de saque para o destino próprio selecionado. Use chave de API ou autorização OAuth de Produção. Campos omitidos preservam o valor atual; salvar não solicita um saque imediato. */
     public com.raims.model.AutomaticWithdrawalSettings updateAutomaticSettings(com.raims.param.UpdateAutomaticWithdrawalSettingsParams params, com.raims.RequestOptions options) {
         return requestor.request("UpdateAutomaticWithdrawalSettings", java.util.Map.of(), params, options, com.raims.model.AutomaticWithdrawalSettings::new);
     }

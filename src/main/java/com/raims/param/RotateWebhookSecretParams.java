@@ -8,7 +8,7 @@ public final class RotateWebhookSecretParams extends com.raims.ApiParams {
 
     public static final class Builder {
         private final com.google.gson.JsonObject values = new com.google.gson.JsonObject();
-        /** Período em que o segredo anterior pode continuar assinando envios. Zero gera uma nova assinatura e encerra a validade dos segredos anteriores, inclusive durante uma transição ativa. Requisições já autorizadas ou em andamento podem chegar com a assinatura anterior. */
+        /** Período em que o segredo anterior pode continuar assinando envios. Zero gera um novo segredo e encerra a validade dos segredos anteriores, inclusive durante uma transição ativa. Requisições já autorizadas ou em andamento podem chegar com a assinatura anterior. */
         public Builder setGracePeriodSeconds(long value) { values.add("grace_period_seconds", com.raims.ApiParams.value(value)); return this; }
         public RotateWebhookSecretParams build() { return new RotateWebhookSecretParams(values); }
     }

@@ -8,7 +8,7 @@ public final class CreateChargeParams extends com.raims.ApiParams {
 
     public static final class Builder {
         private final com.google.gson.JsonObject values = new com.google.gson.JsonObject();
-        /** ID de um cliente da empresa e do ambiente autenticado. Copie o id retornado no cadastro ou na consulta. Pix direto exige CPF/CNPJ válido. Boleto direto exige nome, e-mail válido, CPF/CNPJ e endereço, incluindo CEP e número; complete esses dados no cadastro do cliente. */
+        /** ID de um cliente da empresa e do ambiente autenticado. Use o id retornado no cadastro assim que receber a resposta ou consulte o cliente pelo ID. Pix direto exige CPF/CNPJ válido. Boleto direto exige nome, e-mail válido, CPF/CNPJ e endereço, incluindo CEP e número. */
         public Builder setCustomerId(String value) { values.add("customer_id", com.raims.ApiParams.value(value)); return this; }
         /** Valor da cobrança em centavos de real. Por exemplo, 10000 representa R$ 100,00. */
         public Builder setAmountCents(long value) { values.add("amount_cents", com.raims.ApiParams.value(value)); return this; }

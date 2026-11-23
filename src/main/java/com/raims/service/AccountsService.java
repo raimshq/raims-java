@@ -10,9 +10,9 @@ public final class AccountsService {
     public com.raims.model.AccountFees retrieveFees(com.raims.RequestOptions options) {
         return requestor.request("GetAccountFees", java.util.Map.of(), null, options, com.raims.model.AccountFees::new);
     }
-    /** Recuperar número de conta. Consulte a agência e o número da conta financeira da sua empresa na Raims. A consulta exige uma chave de Produção e uma conta aprovada e habilitada. */
+    /** Recuperar número de conta. Consulte a agência e o número da conta financeira da sua empresa na Raims. A consulta exige acesso autorizado em Produção e uma conta aprovada e habilitada. */
     public com.raims.model.AccountNumber retrieveNumber() { return retrieveNumber(null); }
-    /** Recuperar número de conta. Consulte a agência e o número da conta financeira da sua empresa na Raims. A consulta exige uma chave de Produção e uma conta aprovada e habilitada. */
+    /** Recuperar número de conta. Consulte a agência e o número da conta financeira da sua empresa na Raims. A consulta exige acesso autorizado em Produção e uma conta aprovada e habilitada. */
     public com.raims.model.AccountNumber retrieveNumber(com.raims.RequestOptions options) {
         return requestor.request("GetAccountNumber", java.util.Map.of(), null, options, com.raims.model.AccountNumber::new);
     }

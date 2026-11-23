@@ -10,11 +10,11 @@ public final class BalancesService {
     public com.raims.model.Balance retrieve(com.raims.RequestOptions options) {
         return requestor.request("GetBalance", java.util.Map.of(), null, options, com.raims.model.Balance::new);
     }
-    /** Consultar recebimentos previstos. Consulte a estimativa de recebimentos pendentes no período e o saldo total projetado. Os valores são estimativas e não indicam disponibilidade para saque. */
+    /** Consultar recebimentos previstos. Consulte os recebimentos previstos no período e o saldo total projetado. Os valores são atualizados em segundo plano. Confira updated_at para saber quando a previsão foi atualizada. Para verificar o saldo disponível para saque, consulte GET /v1/balances. */
     public com.raims.model.BalanceForecast forecast(com.raims.param.GetBalanceForecastParams params) { return forecast(params, null); }
-    /** Consultar recebimentos previstos. Consulte a estimativa de recebimentos pendentes no período e o saldo total projetado. Os valores são estimativas e não indicam disponibilidade para saque. */
+    /** Consultar recebimentos previstos. Consulte os recebimentos previstos no período e o saldo total projetado. Os valores são atualizados em segundo plano. Confira updated_at para saber quando a previsão foi atualizada. Para verificar o saldo disponível para saque, consulte GET /v1/balances. */
     public com.raims.model.BalanceForecast forecast() { return forecast(null, null); }
-    /** Consultar recebimentos previstos. Consulte a estimativa de recebimentos pendentes no período e o saldo total projetado. Os valores são estimativas e não indicam disponibilidade para saque. */
+    /** Consultar recebimentos previstos. Consulte os recebimentos previstos no período e o saldo total projetado. Os valores são atualizados em segundo plano. Confira updated_at para saber quando a previsão foi atualizada. Para verificar o saldo disponível para saque, consulte GET /v1/balances. */
     public com.raims.model.BalanceForecast forecast(com.raims.param.GetBalanceForecastParams params, com.raims.RequestOptions options) {
         return requestor.request("GetBalanceForecast", java.util.Map.of(), params, options, com.raims.model.BalanceForecast::new);
     }
