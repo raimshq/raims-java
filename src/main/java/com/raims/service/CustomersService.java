@@ -10,11 +10,11 @@ public final class CustomersService {
     public com.raims.model.CustomerCreated create(com.raims.param.CreateCustomerParams params, com.raims.RequestOptions options) {
         return requestor.request("CreateCustomer", java.util.Map.of(), params, options, com.raims.model.CustomerCreated::new);
     }
-    /** Listar clientes. Lista os clientes da empresa e do ambiente autenticado conforme os filtros informados, com paginação por cursor. Envie os parâmetros na URL, sem corpo na requisição. */
+    /** Listar clientes. Lista os clientes da empresa e do ambiente autenticado, com filtros na URL e paginação por cursor. Os filtros name e external_reference podem omitir clientes recém-criados ou alterados. Para conferir um cadastro conhecido, use GET /v1/customers/{id}. */
     public com.raims.model.CustomerListResponse list(com.raims.param.ListCustomersParams params) { return list(params, null); }
-    /** Listar clientes. Lista os clientes da empresa e do ambiente autenticado conforme os filtros informados, com paginação por cursor. Envie os parâmetros na URL, sem corpo na requisição. */
+    /** Listar clientes. Lista os clientes da empresa e do ambiente autenticado, com filtros na URL e paginação por cursor. Os filtros name e external_reference podem omitir clientes recém-criados ou alterados. Para conferir um cadastro conhecido, use GET /v1/customers/{id}. */
     public com.raims.model.CustomerListResponse list() { return list(null, null); }
-    /** Listar clientes. Lista os clientes da empresa e do ambiente autenticado conforme os filtros informados, com paginação por cursor. Envie os parâmetros na URL, sem corpo na requisição. */
+    /** Listar clientes. Lista os clientes da empresa e do ambiente autenticado, com filtros na URL e paginação por cursor. Os filtros name e external_reference podem omitir clientes recém-criados ou alterados. Para conferir um cadastro conhecido, use GET /v1/customers/{id}. */
     public com.raims.model.CustomerListResponse list(com.raims.param.ListCustomersParams params, com.raims.RequestOptions options) {
         return requestor.request("ListCustomers", java.util.Map.of(), params, options, com.raims.model.CustomerListResponse::new);
     }

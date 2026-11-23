@@ -16,13 +16,13 @@ public final class ListCustomersParams extends com.raims.ApiParams {
         public Builder setBefore(String value) { values.add("before", com.raims.ApiParams.value(value)); return this; }
         /** Identificador público do cliente, com prefixo cus_. */
         public Builder setIdentifier(String value) { values.add("identifier", com.raims.ApiParams.value(value)); return this; }
-        /** Busca pelo nome do cliente, com os cadastros mais recentes primeiro. Deixe vazio para ignorar este filtro. */
+        /** Busca pelo nome do cliente, com os cadastros mais recentes primeiro. Cadastros novos ou alterados podem ficar temporariamente fora dos resultados. Após renomear um cliente, a busca pelo nome anterior ainda pode devolver o cadastro com o nome novo. Deixe vazio para ignorar este filtro. */
         public Builder setName(String value) { values.add("name", com.raims.ApiParams.value(value)); return this; }
         /** Filtra pelo e-mail completo do cliente. */
         public Builder setEmail(String value) { values.add("email", com.raims.ApiParams.value(value)); return this; }
         /** Filtra pelo CPF ou CNPJ completo do cliente, com ou sem pontos, barra, hífen e espaços. */
         public Builder setDocument(String value) { values.add("document", com.raims.ApiParams.value(value)); return this; }
-        /** Filtra pela referência atual do cliente no seu sistema, com igualdade do valor completo, incluindo maiúsculas, minúsculas e acentos. Pode ser combinada com os demais filtros. Após criar ou editar o cliente, a busca pode levar alguns segundos para refletir a referência. Mantenha o valor ao navegar por cursor. */
+        /** Filtra pela referência atual do cliente no seu sistema. Compara o valor completo, com distinção de maiúsculas, minúsculas e acentos. Cadastros novos ou alterados podem ficar temporariamente fora dos resultados. Mantenha o valor ao navegar por cursor. */
         public Builder setExternalReference(String value) { values.add("external_reference", com.raims.ApiParams.value(value)); return this; }
         public ListCustomersParams build() { return new ListCustomersParams(values); }
     }

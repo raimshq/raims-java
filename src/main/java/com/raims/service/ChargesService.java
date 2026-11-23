@@ -10,11 +10,11 @@ public final class ChargesService {
     public com.raims.model.ChargeCreated create(com.raims.param.CreateChargeParams params, com.raims.RequestOptions options) {
         return requestor.request("CreateCharge", java.util.Map.of(), params, options, com.raims.model.ChargeCreated::new);
     }
-    /** Listar cobranças. Lista cobranças da empresa e do ambiente autenticado, com filtros e paginação por cursor. Para avançar, use page.next_after em after enquanto page.has_next for true, mantendo os filtros e a ordenação. Alterações de status podem levar alguns segundos para aparecer nos filtros; aguarde antes de consultar novamente. */
+    /** Listar cobranças. Lista cobranças da empresa e do ambiente autenticado com filtros na URL e paginação por cursor. Os filtros status, email, external_reference, due_gte, due_lte, paid_gte e paid_lte podem omitir gravações recentes. O mesmo vale para customer_id com ordenação por valor ou data ou com período de criação, sem identifier. Para conferir uma cobrança conhecida, use GET /v1/charges/{id}. */
     public com.raims.model.ChargeListResponse list(com.raims.param.ListChargesParams params) { return list(params, null); }
-    /** Listar cobranças. Lista cobranças da empresa e do ambiente autenticado, com filtros e paginação por cursor. Para avançar, use page.next_after em after enquanto page.has_next for true, mantendo os filtros e a ordenação. Alterações de status podem levar alguns segundos para aparecer nos filtros; aguarde antes de consultar novamente. */
+    /** Listar cobranças. Lista cobranças da empresa e do ambiente autenticado com filtros na URL e paginação por cursor. Os filtros status, email, external_reference, due_gte, due_lte, paid_gte e paid_lte podem omitir gravações recentes. O mesmo vale para customer_id com ordenação por valor ou data ou com período de criação, sem identifier. Para conferir uma cobrança conhecida, use GET /v1/charges/{id}. */
     public com.raims.model.ChargeListResponse list() { return list(null, null); }
-    /** Listar cobranças. Lista cobranças da empresa e do ambiente autenticado, com filtros e paginação por cursor. Para avançar, use page.next_after em after enquanto page.has_next for true, mantendo os filtros e a ordenação. Alterações de status podem levar alguns segundos para aparecer nos filtros; aguarde antes de consultar novamente. */
+    /** Listar cobranças. Lista cobranças da empresa e do ambiente autenticado com filtros na URL e paginação por cursor. Os filtros status, email, external_reference, due_gte, due_lte, paid_gte e paid_lte podem omitir gravações recentes. O mesmo vale para customer_id com ordenação por valor ou data ou com período de criação, sem identifier. Para conferir uma cobrança conhecida, use GET /v1/charges/{id}. */
     public com.raims.model.ChargeListResponse list(com.raims.param.ListChargesParams params, com.raims.RequestOptions options) {
         return requestor.request("ListCharges", java.util.Map.of(), params, options, com.raims.model.ChargeListResponse::new);
     }
@@ -74,11 +74,11 @@ public final class ChargesService {
     public com.raims.model.RefundEligibility retrieveRefundEligibility(String id, com.raims.RequestOptions options) {
         return requestor.request("GetRefundEligibility", java.util.Map.of("id", id), null, options, com.raims.model.RefundEligibility::new);
     }
-    /** Consultar estatísticas de cobranças. Consulte quantidades, valores e taxa de pagamento das cobranças para acompanhar seus recebimentos no ERP ou sistema de gestão. A consulta considera a empresa e o ambiente autenticado. Os dados podem levar alguns segundos para refletir alterações nas cobranças. */
+    /** Consultar estatísticas de cobranças. Consulta quantidades, valores e taxa de pagamento das cobranças da empresa e do ambiente autenticado. Os totais são atualizados em segundo plano. Para confirmar uma cobrança específica, use GET /v1/charges/{id}. */
     public com.raims.model.ChargeStatistics statistics(com.raims.param.GetChargeStatisticsParams params) { return statistics(params, null); }
-    /** Consultar estatísticas de cobranças. Consulte quantidades, valores e taxa de pagamento das cobranças para acompanhar seus recebimentos no ERP ou sistema de gestão. A consulta considera a empresa e o ambiente autenticado. Os dados podem levar alguns segundos para refletir alterações nas cobranças. */
+    /** Consultar estatísticas de cobranças. Consulta quantidades, valores e taxa de pagamento das cobranças da empresa e do ambiente autenticado. Os totais são atualizados em segundo plano. Para confirmar uma cobrança específica, use GET /v1/charges/{id}. */
     public com.raims.model.ChargeStatistics statistics() { return statistics(null, null); }
-    /** Consultar estatísticas de cobranças. Consulte quantidades, valores e taxa de pagamento das cobranças para acompanhar seus recebimentos no ERP ou sistema de gestão. A consulta considera a empresa e o ambiente autenticado. Os dados podem levar alguns segundos para refletir alterações nas cobranças. */
+    /** Consultar estatísticas de cobranças. Consulta quantidades, valores e taxa de pagamento das cobranças da empresa e do ambiente autenticado. Os totais são atualizados em segundo plano. Para confirmar uma cobrança específica, use GET /v1/charges/{id}. */
     public com.raims.model.ChargeStatistics statistics(com.raims.param.GetChargeStatisticsParams params, com.raims.RequestOptions options) {
         return requestor.request("GetChargeStatistics", java.util.Map.of(), params, options, com.raims.model.ChargeStatistics::new);
     }
