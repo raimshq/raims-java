@@ -54,6 +54,16 @@ Generated from the pinned public contract. Parameters use `builder()`; omitted f
 | `webhooks().setPause` | `PATCH /v1/webhooks/{webhook_id}/pause` | `SetWebhookPauseParams` | `WebhookPause` | Yes |
 | `webhooks().rotateSecret` | `POST /v1/webhooks/{webhook_id}/rotate_secret` | `RotateWebhookSecretParams` | `WebhookSecretRotation` | Yes |
 | `webhooks().test` | `POST /v1/webhooks/{webhook_id}/test` | `none` | `WebhookTestAccepted` | Yes |
+| `webhookEvents().list` | `GET /v1/webhook_events` | `ListWebhookEventsParams` | `WebhookEventListResponse` | No |
+| `webhookEvents().retrieve` | `GET /v1/webhook_events/{event_id}` | `none` | `WebhookEventDetail` | No |
+| `webhookEvents().deliver` | `POST /v1/webhook_events/{event_id}/deliveries` | `DeliverWebhookEventParams` | `WebhookDeliveryResendAccepted` | Yes |
+| `webhookDeliveries().list` | `GET /v1/webhook_deliveries` | `ListWebhookDeliveriesParams` | `WebhookDeliveryListResponse` | No |
+| `webhookDeliveries().retrieve` | `GET /v1/webhook_deliveries/{delivery_id}` | `none` | `WebhookDelivery` | No |
+| `webhookDeliveries().listAttempts` | `GET /v1/webhook_deliveries/{delivery_id}/attempts` | `ListWebhookDeliveryAttemptsParams` | `WebhookAttemptListResponse` | No |
+| `webhookDeliveries().retrieveAttempt` | `GET /v1/webhook_deliveries/{delivery_id}/attempts/{attempt_id}` | `none` | `WebhookAttemptDetail` | No |
+| `webhookDeliveries().advance` | `POST /v1/webhook_deliveries/{delivery_id}/advance` | `none` | `WebhookAdvanceAccepted` | Yes |
+| `webhookDeliveries().resend` | `POST /v1/webhook_deliveries/{delivery_id}/resend` | `none` | `WebhookDeliveryResendAccepted` | Yes |
+| `webhookDeliveries().resendMany` | `POST /v1/webhook_deliveries/resend` | `ResendWebhookDeliveriesParams` | `WebhookBulkResendAccepted` | Yes |
 | `withdrawalDestinations().list` | `GET /v1/withdrawal_destinations` | `ListWithdrawalDestinationsParams` | `WithdrawalDestinationListResponse` | No |
 | `withdrawalDestinations().retrieve` | `GET /v1/withdrawal_destinations/{id}` | `none` | `WithdrawalDestination` | No |
 | `withdrawals().create` | `POST /v1/withdrawals` | `CreateWithdrawalParams` | `Withdrawal` | Yes |

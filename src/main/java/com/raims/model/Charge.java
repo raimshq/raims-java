@@ -36,4 +36,6 @@ public final class Charge extends com.raims.ApiResource {
     public String getExternalReference() { return (data.get("external_reference") == null || data.get("external_reference").isJsonNull() ? null : data.get("external_reference").getAsString()); }
     /** Dados de integração associados ao recurso. Retorna {} quando não há valores. Esse mapa não é usado como filtro de busca nem incluído automaticamente nos eventos de webhook. */
     public java.util.Map<String, String> getMetadata() { return (data.get("metadata") == null || data.get("metadata").isJsonNull() ? null : readMap(data.get("metadata"), item -> (item == null || item.isJsonNull() ? null : item.getAsString()))); }
+    /** boleto_settlement */
+    public com.raims.model.ChargeBoletoSettlement getBoletoSettlement() { return (data.get("boleto_settlement") == null || data.get("boleto_settlement").isJsonNull() ? null : new com.raims.model.ChargeBoletoSettlement(data.get("boleto_settlement").getAsJsonObject(), getLastResponse())); }
 }

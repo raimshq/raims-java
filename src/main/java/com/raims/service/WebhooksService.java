@@ -4,9 +4,9 @@ package com.raims.service;
 public final class WebhooksService {
     private final com.raims.internal.ApiRequestor requestor;
     public WebhooksService(com.raims.internal.ApiRequestor requestor) { this.requestor = java.util.Objects.requireNonNull(requestor); }
-    /** Criar um webhook. Cadastre o endereço HTTPS que receberá os eventos escolhidos da empresa e do ambiente autenticado. Guarde o id para administrar o destino e o secret_key para validar as assinaturas. As consultas do cadastro não retornam o segredo. */
+    /** Criar um webhook. Cadastre o endereço HTTPS que receberá os eventos escolhidos da empresa e do ambiente autenticado. A credencial precisa de acesso de leitura ao domínio de cada evento selecionado. Guarde o id para administrar o destino e o secret_key para validar as assinaturas. As consultas do cadastro não retornam o segredo. */
     public com.raims.model.WebhookCreated create(com.raims.param.CreateWebhookParams params) { return create(params, null); }
-    /** Criar um webhook. Cadastre o endereço HTTPS que receberá os eventos escolhidos da empresa e do ambiente autenticado. Guarde o id para administrar o destino e o secret_key para validar as assinaturas. As consultas do cadastro não retornam o segredo. */
+    /** Criar um webhook. Cadastre o endereço HTTPS que receberá os eventos escolhidos da empresa e do ambiente autenticado. A credencial precisa de acesso de leitura ao domínio de cada evento selecionado. Guarde o id para administrar o destino e o secret_key para validar as assinaturas. As consultas do cadastro não retornam o segredo. */
     public com.raims.model.WebhookCreated create(com.raims.param.CreateWebhookParams params, com.raims.RequestOptions options) {
         return requestor.request("CreateWebhook", java.util.Map.of(), params, options, com.raims.model.WebhookCreated::new);
     }
@@ -24,9 +24,9 @@ public final class WebhooksService {
     public com.raims.model.Webhook retrieve(String webhookId, com.raims.RequestOptions options) {
         return requestor.request("GetWebhook", java.util.Map.of("webhook_id", webhookId), null, options, com.raims.model.Webhook::new);
     }
-    /** Atualizar um webhook. Altere o nome, a URL, a seleção de eventos ou a ativação de um webhook. Envie apenas os campos que deseja mudar; omitir um campo preserva seu valor. A seleção de eventos enviada substitui a anterior. Os campos não aceitam null nem valores vazios. */
+    /** Atualizar um webhook. Altere o nome, a URL, a seleção de eventos ou a ativação de um webhook. Envie apenas os campos que deseja mudar. A seleção de eventos enviada substitui a anterior. Cada tipo acrescentado exige acesso de leitura ao domínio. Para trocar a URL ou reativar o destino, a credencial precisa desse acesso para toda a seleção resultante. Os campos não aceitam null nem valores vazios. */
     public com.raims.model.Webhook update(String webhookId, com.raims.param.UpdateWebhookParams params) { return update(webhookId, params, null); }
-    /** Atualizar um webhook. Altere o nome, a URL, a seleção de eventos ou a ativação de um webhook. Envie apenas os campos que deseja mudar; omitir um campo preserva seu valor. A seleção de eventos enviada substitui a anterior. Os campos não aceitam null nem valores vazios. */
+    /** Atualizar um webhook. Altere o nome, a URL, a seleção de eventos ou a ativação de um webhook. Envie apenas os campos que deseja mudar. A seleção de eventos enviada substitui a anterior. Cada tipo acrescentado exige acesso de leitura ao domínio. Para trocar a URL ou reativar o destino, a credencial precisa desse acesso para toda a seleção resultante. Os campos não aceitam null nem valores vazios. */
     public com.raims.model.Webhook update(String webhookId, com.raims.param.UpdateWebhookParams params, com.raims.RequestOptions options) {
         return requestor.request("UpdateWebhook", java.util.Map.of("webhook_id", webhookId), params, options, com.raims.model.Webhook::new);
     }

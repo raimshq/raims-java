@@ -22,6 +22,10 @@ public class RaimsServices {
     public com.raims.service.WebhookEventTypesService webhookEventTypes() { return webhookEventTypes; }
     private final com.raims.service.WebhooksService webhooks;
     public com.raims.service.WebhooksService webhooks() { return webhooks; }
+    private final com.raims.service.WebhookEventsService webhookEvents;
+    public com.raims.service.WebhookEventsService webhookEvents() { return webhookEvents; }
+    private final com.raims.service.WebhookDeliveriesService webhookDeliveries;
+    public com.raims.service.WebhookDeliveriesService webhookDeliveries() { return webhookDeliveries; }
     private final com.raims.service.WithdrawalDestinationsService withdrawalDestinations;
     public com.raims.service.WithdrawalDestinationsService withdrawalDestinations() { return withdrawalDestinations; }
     private final com.raims.service.WithdrawalsService withdrawals;
@@ -39,6 +43,8 @@ public class RaimsServices {
         this.statements = new com.raims.service.StatementsService(requestor);
         this.webhookEventTypes = new com.raims.service.WebhookEventTypesService(requestor);
         this.webhooks = new com.raims.service.WebhooksService(requestor);
+        this.webhookEvents = new com.raims.service.WebhookEventsService(requestor);
+        this.webhookDeliveries = new com.raims.service.WebhookDeliveriesService(requestor);
         this.withdrawalDestinations = new com.raims.service.WithdrawalDestinationsService(requestor);
         this.withdrawals = new com.raims.service.WithdrawalsService(requestor);
         this.simulations = new Simulations(requestor);

@@ -14,6 +14,6 @@ public final class WithdrawalLimits extends com.raims.ApiResource {
     public Long getAvailableAmountCents() { return (data.get("available_amount_cents") == null || data.get("available_amount_cents").isJsonNull() ? null : data.get("available_amount_cents").getAsBigDecimal().longValueExact()); }
     /** Indica se há destino Pix próprio cadastrado para o saque. No Sandbox, retorna false. */
     public Boolean getDestinationConfigured() { return (data.get("destination_configured") == null || data.get("destination_configured").isJsonNull() ? null : data.get("destination_configured").getAsBoolean()); }
-    /** Limites Pix e consumo do período atual, ou null quando não houver limites disponíveis para consulta. No Sandbox, retorna null. Esse valor não significa que o saque esteja livre de limites. */
+    /** Limites Pix e consumo do período atual para o contexto do destino padrão, interno ou externo. Retorna null quando o contexto não puder ser identificado ou no Sandbox. */
     public com.raims.model.WithdrawalPeriodLimits getLimits() { return (data.get("limits") == null || data.get("limits").isJsonNull() ? null : new com.raims.model.WithdrawalPeriodLimits(data.get("limits").getAsJsonObject(), getLastResponse())); }
 }

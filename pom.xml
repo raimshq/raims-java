@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.raims</groupId>
   <artifactId>raims-java</artifactId>
-  <version>0.2.1</version>
+  <version>0.3.0</version>
   <name>Raims Java</name>
   <description>Official Java SDK for the Raims public API.</description>
   <url>https://docs.raims.com/en/integracoes/sdk-java</url>

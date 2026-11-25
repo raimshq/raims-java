@@ -96,7 +96,9 @@ class Generator:
         elif isinstance(value, dict):
             if '$ref' in value:
                 self.resolve(value)
-            if 'oneOf' in value or 'allOf' in value:
+            if 'oneOf' in value:
+                self.normalize(value)
+            if 'allOf' in value:
                 raise ValueError('Unsupported schema composition')
             if 'anyOf' in value and (len(value['anyOf']) != 2 or sum(v.get('type') == 'null' for v in value['anyOf']) != 1):
                 raise ValueError('Only nullable anyOf is supported')
@@ -105,6 +107,14 @@ class Generator:
 
     def normalize(self, schema):
         schema = dict(schema)
+        if 'oneOf' in schema:
+            branches = schema['oneOf']
+            if set(schema) != {'oneOf'} or len(branches) < 2 or any(
+                    set(branch) != {'type', 'pattern'} or branch['type'] != 'string'
+                    for branch in branches):
+                raise ValueError('Only patterned string alternatives can be represented.')
+            # The SDK type is shared by all alternatives. The pinned schema retains the patterns.
+            return {'type': 'string'}
         if 'anyOf' in schema:
             child = next(v for v in schema.pop('anyOf') if v.get('type') != 'null')
             schema = dict(child, **schema)

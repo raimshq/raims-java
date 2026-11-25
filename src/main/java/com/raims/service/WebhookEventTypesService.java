@@ -4,9 +4,9 @@ package com.raims.service;
 public final class WebhookEventTypesService {
     private final com.raims.internal.ApiRequestor requestor;
     public WebhookEventTypesService(com.raims.internal.ApiRequestor requestor) { this.requestor = java.util.Objects.requireNonNull(requestor); }
-    /** Listar os eventos disponíveis. Consulte os códigos que podem ser selecionados ao cadastrar ou atualizar um webhook. O teste técnico webhook.test é solicitado no endpoint de teste e não entra na lista de eventos do cadastro. */
+    /** Listar os eventos disponíveis. Consulte os códigos disponíveis no ambiente para os domínios que a credencial pode ler. O teste técnico webhook.test é solicitado no endpoint de teste e não entra na seleção do cadastro. */
     public com.raims.model.WebhookEventTypeListResponse list() { return list(null); }
-    /** Listar os eventos disponíveis. Consulte os códigos que podem ser selecionados ao cadastrar ou atualizar um webhook. O teste técnico webhook.test é solicitado no endpoint de teste e não entra na lista de eventos do cadastro. */
+    /** Listar os eventos disponíveis. Consulte os códigos disponíveis no ambiente para os domínios que a credencial pode ler. O teste técnico webhook.test é solicitado no endpoint de teste e não entra na seleção do cadastro. */
     public com.raims.model.WebhookEventTypeListResponse list(com.raims.RequestOptions options) {
         return requestor.request("ListWebhookEventTypes", java.util.Map.of(), null, options, com.raims.model.WebhookEventTypeListResponse::new);
     }
